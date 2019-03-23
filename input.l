@@ -38,7 +38,12 @@ silence (.|\n)
 }
 
 <ABSTRACT>{
-&.*;                { ; }
-{wordPT}()          { add_category(article, yytex); }
-"\n"                { BEGIN INITIAL; }
+&.*;                   { ; }
+{wordPT}(),\.          { add_category(article, yytex); }
+"\n"                   { BEGIN INITIAL; }
+}
+
+<INFO>{
+{word}"="{silence}    {add_info(article, yytex);}
+"}}"                  {BEGIN INITIAL;} // falta verificar o que esta dentro de parenteses retos na infobox 
 }
