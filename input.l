@@ -28,22 +28,22 @@ silence (.|\n)
 }
 
 <TITLE>{
-{wordPT}(?=<\/title>) {add_title(article, yytex); }
+{wordPT}(?=<\/title>) {add_title(article, yytex, yylen); }
 "\n"                  { BEGIN INITIAL; }
 }
 
 <CATEGORY>{
-{wordPT}              { add_category(article, yytext); }
+{wordPT}              { add_category(article, yytext, yylen); }
 "\n"                  { BEGIN INITIAL; }
 }
 
 <ABSTRACT>{
 &.*;                   { ; }
-{wordPT}(),\.          { add_category(article, yytex); }
+{wordPT}(),\.          { add_category(article, yytex, yylen); }
 "\n"                   { BEGIN INITIAL; }
 }
 
 <INFO>{
-{word}"="{silence}    {add_info(article, yytex);}
+{word}"="{silence}    {add_info(article, yytex, yylen);}
 "}}"                  {BEGIN INITIAL;} // falta verificar o que esta dentro de parenteses retos na infobox 
 }
