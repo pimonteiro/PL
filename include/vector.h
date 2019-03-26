@@ -1,10 +1,10 @@
-#if __VECTOR_H__
-#define __VECTOR_H__
+#ifndef __VECTOR_H__
+#define __VECTOR_H_
 
-typedef struct vector *Vector{
-  Article** vector;
-  int size;
-};
+#include "article.h"
 
+typedef struct vector* Vector;
+
+Vector new_vector();
 void add_article(Vector vector, Article a);
 #endif
