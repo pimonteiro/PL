@@ -1,23 +1,82 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -O2 -g -Iinclude/
+#  / ____| |  \/  |   /\   | |/ /  ____|  ____|_   _| |    |  ____|
+# | |      | \  / |  /  \  | ' /| |__  | |__    | | | |    | |__   
+# | |      | |\/| | / /\ \ |  < |  __| |  __|   | | | |    |  __|  
+# | |____  | |  | |/ ____ \| . \| |____| |     _| |_| |____| |____ 
+#  \_____| |_|  |_/_/    \_\_|\_\______|_|    |_____|______|______|
+#                                                                  
+#                                                                  
 
-all: program
+SHELL       = /bin/sh
+detected_OS := $(shell sh -c 'uname -s 2>/dev/null || echo not')
+BIN_NAME    = prog
+CC          = gcc
+LD          = gcc
+CFLAGS      = -std=c11 -Wall -Wextra -Wno-unused-parameter -pedantic -g -O0
+DEBUG		= 1
 
-program: main.o article.o vector.o htmlexporter.o
-	$(CC) $(CLFAGS) -o program main.o article.o vector.o htmlexporter.o
 
-main.o: main.c article.h vector.h htmlexporter.h
-	$(CC) $(CFLAGS) -o main.o -c main.c
+#ifeq ($(DEBUG), yes)
+#	CFLAGS += -O0 -g
+#else
+#	CFLAGS += -O2
+#endif
 
-article.o: article.c article.h
-	$(CC) $(CFLAGS) -o article.o -c article.c
+# ____  ____  _     _____  ____  ____  _    _    
+#/   _\/  _ \/ \  //__ __\/  __\/  _ \/ \  / \   
+#|  /  | / \|| |\ || / \  |  \/|| / \|| |  | |   
+#|  \__| \_/|| | \|| | |  |    /| \_/|| |_/\ |_/\
+#\____/\____/\_/  \| \_/  \_/\_\\____/\____|____/
+                                                
 
-vector.o: vector.c vector.h article.h
-	$(CC) $(CFLAGS) -o vector.o -c vector.c
+SRC_DIR    = src
+BIN_DIR    = bin
+BUILD_DIR  = build
+SRC        = $(wildcard $(SRC_DIR)/*.c)
+OBJ        = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
+DEPS       = $(patsubst $(BUILD_DIR)/%.o,$(BUILD_DIR)/%.d,$(OBJ))
+DOC_DIR    = docs/
+PROGRAM    = program
 
-htmlexporter.o: htmlexporter.c htmlexporter.h vector.h artice.h
-	$(cc) $(FLAGS) -o htmlexporter.o -c htmlexporter.c
+vpath %.c $(SRC_DIR)
+
+# ____  _     _    _________ 
+#/  __\/ \ /\/ \  /  __/ ___\
+#|  \/|| | ||| |  |  \ |    \
+#|    /| \_/|| |_/\  /_\___ |
+#\_/\_\\____/\____|____\____/
+
+.DEFAULT_GOAL = all
+
+.PHONY: run fmt doc checkdirs all clean
+
+$(BUILD_DIR)/%.d: %.c
+	$(CC) -M $(CFLAGS) $(INCLUDES) $< -o $@ 
+
+$(BUILD_DIR)/%.o: %.c
+	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@ 
+
+$(BIN_DIR)/$(BIN_NAME): $(DEPS) $(OBJ)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJ) 
+
+run:
+	@./$(BIN_DIR)/$(BIN_NAME)
+
+fmt:
+	@astyle --style=google -nr *.c,*.h
+
+doc:
+	@doxygen Doxyfile
+
+checkdirs:
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BIN_DIR)
+
+all: checkdirs $(BIN_DIR)/$(BIN_NAME)
 
 clean:
-	rm -rf *.o
-	rm program
+	@echo "Cleaning..."
+	@echo ""
+	@rm -rd $(BUILD_DIR)/* $(BIN_DIR)/*
+	@rm -rd $(DOC_DIR)/*
+	@echo ""
+	@echo "...✓ done!"
