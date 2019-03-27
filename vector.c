@@ -3,12 +3,6 @@
 
 #include <stdlib.h>
 
-struct vector{
-  Article* vector;
-  int size;
-  int used;
-};
-
 Vector new_vector(){
     Vector v = (Vector) malloc(sizeof(struct vector));
     v->size = 4; //Stock value

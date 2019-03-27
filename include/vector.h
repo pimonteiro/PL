@@ -3,7 +3,12 @@
 
 #include "article.h"
 
-typedef struct vector* Vector;
+typedef struct vector{
+  Article* vector;
+  int size;
+  int used;
+}* Vector;
+
 
 Vector new_vector();
 void add_article(Vector vector, Article a);

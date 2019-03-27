@@ -1,16 +1,14 @@
 #ifndef __ARTICLE_H__
 #define __ARTICLE_H__ 
 
-struct article{
+typedef struct article{
   char*  title;
   char* info;
   char*  abstract;
   char** category;
   int n_category;
   char*  url;
-};
-
-typedef struct article *Article;
+}* Article;
 
 Article new_article();
 void add_title(Article a, char* t, int size);
