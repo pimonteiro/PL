@@ -1,17 +1,82 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -O2 -g
+#  / ____| |  \/  |   /\   | |/ /  ____|  ____|_   _| |    |  ____|
+# | |      | \  / |  /  \  | ' /| |__  | |__    | | | |    | |__   
+# | |      | |\/| | / /\ \ |  < |  __| |  __|   | | | |    |  __|  
+# | |____  | |  | |/ ____ \| . \| |____| |     _| |_| |____| |____ 
+#  \_____| |_|  |_/_/    \_\_|\_\______|_|    |_____|______|______|
+#                                                                  
+#                                                                  
 
-articles: input.l article.o vector.o
-	@mkdir bin
-	@flex
-	$(CC) $(CFLAGS) lex.yy.cc article.o -o bin/articles
-	@rm -c lex.yy.c article.o vector.o
+SHELL       = /bin/sh
+detected_OS := $(shell sh -c 'uname -s 2>/dev/null || echo not')
+BIN_NAME    = prog
+CC          = gcc
+LD          = gcc
+CFLAGS      = -std=c11 -Wall -Wextra -Wno-unused-parameter -pedantic -g -O0
+DEBUG		= 1
 
-article.o:
-	$(CC)  $(CFLAGS) -c article.c
 
-vector.o:
-	$(CC)  $(CFLAGS) -c vector.c
+#ifeq ($(DEBUG), yes)
+#	CFLAGS += -O0 -g
+#else
+#	CFLAGS += -O2
+#endif
+
+# ____  ____  _     _____  ____  ____  _    _    
+#/   _\/  _ \/ \  //__ __\/  __\/  _ \/ \  / \   
+#|  /  | / \|| |\ || / \  |  \/|| / \|| |  | |   
+#|  \__| \_/|| | \|| | |  |    /| \_/|| |_/\ |_/\
+#\____/\____/\_/  \| \_/  \_/\_\\____/\____|____/
+                                                
+
+SRC_DIR    = src
+BIN_DIR    = bin
+BUILD_DIR  = build
+SRC        = $(wildcard $(SRC_DIR)/*.c)
+OBJ        = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
+DEPS       = $(patsubst $(BUILD_DIR)/%.o,$(BUILD_DIR)/%.d,$(OBJ))
+DOC_DIR    = docs/
+PROGRAM    = program
+
+vpath %.c $(SRC_DIR)
+
+# ____  _     _    _________ 
+#/  __\/ \ /\/ \  /  __/ ___\
+#|  \/|| | ||| |  |  \ |    \
+#|    /| \_/|| |_/\  /_\___ |
+#\_/\_\\____/\____|____\____/
+
+.DEFAULT_GOAL = all
+
+.PHONY: run fmt doc checkdirs all clean
+
+$(BUILD_DIR)/%.d: %.c
+	$(CC) -M $(CFLAGS) $(INCLUDES) $< -o $@ 
+
+$(BUILD_DIR)/%.o: %.c
+	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@ 
+
+$(BIN_DIR)/$(BIN_NAME): $(DEPS) $(OBJ)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJ) 
+
+run:
+	@./$(BIN_DIR)/$(BIN_NAME)
+
+fmt:
+	@astyle --style=google -nr *.c,*.h
+
+doc:
+	@doxygen Doxyfile
+
+checkdirs:
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BIN_DIR)
+
+all: checkdirs $(BIN_DIR)/$(BIN_NAME)
 
 clean:
-	@rm -rf ../bin lex.yy.cc *.o 2>/dev/null || true
+	@echo "Cleaning..."
+	@echo ""
+	@rm -rd $(BUILD_DIR)/* $(BIN_DIR)/*
+	@rm -rd $(DOC_DIR)/*
+	@echo ""
+	@echo "...✓ done!"
