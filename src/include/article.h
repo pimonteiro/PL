@@ -1,12 +1,13 @@
-#ifndef __ARTICLE_H__
-#define __ARTICLE_H__ 
+#ifndef ARTICLE_H
+#define ARTICLE_H
 
 typedef struct article{
   char*  title;
   char* info;
-  char*  abstract;
+  char**  abstract;
   char** category;
   int n_category;
+  int n_words;
   char*  url;
 }* Article;
 

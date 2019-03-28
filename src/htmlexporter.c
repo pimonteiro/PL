@@ -1,5 +1,6 @@
-#include "include/vector.h"
 #include "include/article.h"
+#include "include/vector.h"
+#include "include/auxFunc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,15 +16,6 @@
 int index = 0;
 
 
-int is_category(char* cat, char** categories, int n){
-    int i;
-    for(i = 0; i < n; i++){
-        if(strcmp(categories[i],cat) == 0)           // Talvez seja preciso fazer alguma coisa, caso por exemplo um esteja minusculas e outro maiusculas
-            return 1;
-    }
-    return 0;
-}
-
 /*
 <table class="tg">
   <tr>
@@ -36,15 +28,15 @@ int is_category(char* cat, char** categories, int n){
   </tr>
 */
 //TODO
-void print_info_table(Article a, FILE* f){
+static void print_info_table(Article a, FILE* f){
     //fprintf(f,"<table classe=\"tg\">\n");
 }
 
-void print_index(char* title, FILE* f){
+static void print_index(char* title, FILE* f){
     fprintf(f, "<li><a href=\"#C%d\">%s</a></li>", index, title);
 }
 
-void print_article(Article  a, FILE* f){
+static void print_article(Article  a, FILE* f){
     fprintf(f,"<div class=\"articles\">\n<h1 class=\"articles\" id=\"C%d\"><u>%s</u></h1>\n", index, a->title);
     fprintf(f,"<p><small><a href=\"%s\">Artigo Original</a></small></p>\n</div>", a->url);
     fprintf(f,"<h2>Categorias:</h2>\n<ul>\n");
@@ -53,7 +45,11 @@ void print_article(Article  a, FILE* f){
     }
     fprintf(f,"</ul>\n<h2>Abstract:</h2>\n");
     print_info_table(a, f);
-    fprintf(f,"<p>%s</p>\n", a->abstract);
+    fprintf(f,"<p>");
+    for(int i = 0; i < a->n_words; i++){
+        fprintf(f,"%s ", a->abstract[i]);
+    }
+    fprintf(f,"</p>\n");
     fprintf(f,"<br><hr><br>\n");
 }
 

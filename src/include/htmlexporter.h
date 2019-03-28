@@ -1,5 +1,5 @@
-#ifndef __HTMLEXPORTER_H__
-#define __HTMLEXPORTER_H__
+#ifndef HTMLEXPORTER_H
+#define HTMLEXPORTER_H
 
 #include "vector.h"
 
