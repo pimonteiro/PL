@@ -7,23 +7,28 @@
 #include <string.h>
 
 
+static void print_info_table(FILE* f, char* info){
+
+}
 
 static void print_article(Article a, FILE* f){
-    fprintf(f,"\\section{%s \\\\\n\\ 
-            \\href{%s}{\\normalsize{\\textit{Artigo Original}}}\n", a->title, a->url);
+    fprintf(f,"\\section{%s}\n", a->title);
+    fprintf(f,"\\href{%s}{\\textit{Artigo Original}}\n\\newline\n", a->url);
     fprintf(f,"\\textbf{Categorias:}\n\\begin{itemize}\n");
     for(int i = 0; i < a->n_category; i++){
         fprintf(f,"\t\\item %s;\n", a->category[i]);
     }
     fprintf(f,"\\end{itemize}\n");
     fprintf(f,"\\subsection{Abstract}\n\n");
+    fprintf(f,"\\begin{tabular}{|p{3cm}||p{3cm}|p{3cm}|p{3cm}|}\n\\hline\n\\multicolumn{2}{|c|}{Info} \\\\\n\\hline\n");
+    print_info_table(f, a->info);
+    fprintf(f,"\\end{tabular}\n");
+
     for(int i = 0; i < a->n_words; i++){
         fprintf(f,"%s ", a->abstract[i]);
     }
     fprintf(f,"\n\\newpage\n");
 }
-
-
 
 void latex_export(char* name, Vector v, char** categories, int n_categories){
     char* filename = malloc(sizeof(name) +4);

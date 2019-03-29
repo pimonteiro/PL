@@ -4,12 +4,16 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 
 int main(){
     Article a = new_article();
     add_title(a, "Como reinar Portugal", 50);
-    add_info(a, "ainda vai ser definido isto mas é pra cagar",200);
+    char str[] = "nome_divindade =Aquiles\n        imagem   =Achilles Statue 2.jpg\n    pais=Tétis e Peleu";
+	int init_size = strlen(str);
+
+    add_info(a, str, init_size);
     add_url(a,"www.google.pt", 50);
     add_category(a,"Historia",20);
     add_category(a,"Cultura",20);
@@ -22,6 +26,7 @@ int main(){
     char* cat[2];
     cat[0] = "Historia";
     cat[1] = "Cultura";
-    latex_export("test1",v,cat,2);
+    latex_export("teste1", v,cat,2);
+    //html_export(v,cat,2);
     return 0;
 }

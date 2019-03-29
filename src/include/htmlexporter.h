@@ -3,6 +3,6 @@
 
 #include "vector.h"
 
-void html_export(char* filename, Vector v, char** categories, int n_categories);
+void html_export(Vector v, char** categories, int n_categories);
 
 #endif
