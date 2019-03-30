@@ -15,35 +15,37 @@
 #define IMG_URL         "#/media/File:"
 
 
-int index = 0;
+int ind = 0;
 
-// Further testing needed
-// Descobrir palavras que parecem imagens PODIA SER TRABALHO DO FLEX
-// printf(f, "<img src=\"%s%s%s\">", a->url, IMG_URL, word);
+//FALTA SUBSTITUIR OS ESPAÇOS NO TITULO POR _ PARA OS LINKS
 static void print_info_table(Article a, FILE* f){
     fprintf(f,"<table class=\"blueTable\">\n\t<tbody>\n");
-	char delim[] = "=";
-    char *ptr = strtok(a->info, delim);
-
-	while(ptr != NULL)
-	{
+    for(int i = 0; i < a->n_info; i++){
+        char delim[] = "=";
+        char *ptr = strtok(a->info[i], delim);
         fprintf(f,"\t\t<tr>\n");
-        for(int i = 0; i < 2; i++){
-            fprintf(f, "\t\t\t<td>%s</td>\n", ptr);
-            ptr = strtok(NULL, delim); // Sei que existirá
+        fprintf(f, "\t\t\t<td>%s</td>\n\t\t\t<td>", ptr);
+        ptr = strtok(NULL, delim); // Sei que existirá
+        if(ptr == NULL){
+            printf("Something bad on xml format.\n");
+            exit(1);
         }
-        fprintf(f,"\t\t</tr>\n");
-	}
+        if(strstr(ptr,".png") || strstr(ptr,".jpg") || strstr(ptr,".jpeg"))
+            fprintf(f,"<img src=\"%s/%s/%s%s\">", a->url, a->title, IMG_URL, ptr);
+        else
+            fprintf(f,"%s",ptr);
+        fprintf(f,"</td>\n\t\t</tr>\n");
+    }
     fprintf(f,"\t</tbody>\n</table>\n");
 }
 
 static void print_index(char* title, FILE* f){
-    fprintf(f, "<li><a href=\"%d.html\">%s</a></li>\n", index, title);
+    fprintf(f, "<li><a href=\"%d.html\">%s</a></li>\n", ind, title);
 }
 
 static void print_article(Article  a){
     char title[20];
-    sprintf(title,"%d.html",index);
+    sprintf(title,"%d.html",ind);
 
     FILE* f = fopen(title,"w");
     if(f == NULL){
@@ -54,7 +56,7 @@ static void print_article(Article  a){
     HEAD_BODY_HTML(f,a->title);
     fprintf(f,"<p><a href=\"index.html\"><img class=\"back\" src=\"../assets/back.png\">Voltar ao início...</a></p>\n");
     fprintf(f,"<div class=\"articles\">\n<h1 class=\"articles\"><u>%s</u></h1>\n", a->title);
-    fprintf(f,"<p><small><a href=\"http://%s\">Artigo Original</a></small></p>\n</div>\n", a->url);
+    fprintf(f,"<p><small><a href=\"%s/%s\">Artigo Original</a></small></p>\n</div>\n", a->url, a->title);
     fprintf(f,"<h2>Categorias:</h2>\n<ul>\n");
     for(int i = 0; i < a->n_category; i++){
         fprintf(f, "<li>%s</li>\n",a->category[i]);
@@ -99,7 +101,8 @@ void html_export(Vector v, char** categories, int n_categories){
             if(c){
                 print_article(a);
                 print_index(a->title, homepage);
-                index++;
+                ind++;
+                break;
             }
         }
     }

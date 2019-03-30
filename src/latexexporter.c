@@ -6,9 +6,23 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define IMG_URL         "#/media/File:"
 
-static void print_info_table(FILE* f, char* info){
-
+static void print_info_table(FILE* f, Article a){
+    fprintf(f, "\\hline\n");
+    for(int i = 0; i < a->n_info; i++){
+        char delim[] = "=";
+        char *ptr = strtok(a->info[i], delim);
+        fprintf(f,"%s & ", ptr);
+        ptr = strtok(NULL, delim); // Sei que existirá
+        if(ptr == NULL){
+            printf("Something bad on xml format.\n");
+            exit(1);
+        }
+        fprintf(f,"%s \\\\\n",ptr);
+        fprintf(f,"\\hline\n");
+    }
+    fprintf(f,"\\hline\n");
 }
 
 static void print_article(Article a, FILE* f){
