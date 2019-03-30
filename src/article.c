@@ -12,27 +12,32 @@ Article new_article(){
 }
 
 void add_title(Article a, char* t, int size){
-    a->title = malloc(sizeof(size));
-    a->title = t;
+    a->title = malloc(sizeof(size + 1));
+    strcat(a->title,t);
 }
 
 void add_info(Article a, char* t, int size){
-    a->info = malloc(sizeof(size));
-    a->info = t;
+    a->info = malloc(sizeof(size + 1));
+    strcat(a->info,t); // TODO vai mudar
 }
 
 void add_url(Article a, char* t, int size){
     int length = size + strlen(a->title);
     a->url = malloc(sizeof(length+1));
-    int i;
-    for(i = 0; i < size; i++){
-        a->url[i] = t[i];
-    }
+    strcat(a->url,t);
+    strcat(a->url,a->title);
+    /*
+    //int i;
+    //for(i = 0; i < size; i++){
+    //    a->url[i] = t[i];
+    //}
+    
     for(i = size; i < length; i++){
         a->url[i] = a->title[i - size];
         
     }
     a->url[i] = '\0';
+    */
 }
 
 void add_abstract(Article a, char* t, int size){
@@ -42,8 +47,8 @@ void add_abstract(Article a, char* t, int size){
         new[i] = malloc(sizeof(a->abstract[i]));
         new[i] = a->abstract[i];
     }
-    new[i] = malloc(sizeof(size));
-    new[i] = t;
+    new[i] = malloc(sizeof(size + 1));
+    strcat(new[i],t);
     a->n_words++;
     a->abstract = new;
 }
@@ -55,9 +60,8 @@ void add_category(Article a, char* t, int size){
         new_category[i] = malloc(sizeof(a->category[i]));
         new_category[i] = a->category[i];
     }
-    new_category[i] = malloc(sizeof(size));
-    new_category[i] = t;
+    new_category[i] = malloc(sizeof(size + 1));
+    strcat(new_category[i],t);
     a->n_category++;
-
     a->category = new_category;
 }
