@@ -4,7 +4,7 @@
 //#include "include/article.h"
 //#include "include/vector.h"
 // Vector vector = new_vector();
-int c = 0;
+int i = 0;
 %}
 
 %x LINK
@@ -12,30 +12,32 @@ int c = 0;
 %x CATEGORY
 %x INFO
 %x ABSTRACT 
+%x REFS
 
 word    ([a-zA-Z]+)
 marks   (à|á|â|ã|é|è|ê|ẽ|í|ì|î|ĩ|ó|ò|ô|õ|ú|ù|û|ũ)
 wordPT  ({word}+{marks}*{word}*)
 silence (.|\n)
-teste   ([&\n])
+teste   (&[^;]*;) 
 %%
 <INITIAL>"<title>"             { BEGIN TITLE; }
 <INITIAL>"{Info/"              { BEGIN INFO; }
-<INITIAL>"'''"                 {if(c==0) BEGIN ABSTRACT; }
+<INITIAL>"'''"                 {if(i==0) BEGIN ABSTRACT; }
 <INITIAL>^\[\["Categoria:"      { BEGIN CATEGORY; }
 
 
 <TITLE>({wordPT}" "?)+/"<\/title>" { printf("%s\n", yytext); BEGIN INITIAL; }
 
-<INFO>&([^;]*)?;([^;]*)?;                     { ; }
+<INFO>&[^;]*;                            { ; }
 <INFO>{wordPT}\n                  {printf("%s", yytext);}
 <INFO>"|"[^=]+=.+"\n"             {  printf("%s", yytext+1); }
 <INFO>^"}}"                       { BEGIN INITIAL; } 
 
-<ABSTRACT>&([^;]*)?;([^;]*)?;                   { ; }
-<ABSTRACT>"({{"[^\}]*"}})"         { ; }
-<ABSTRACT>[^('''|\(\{\{|\n)]*      { printf("%s", yytext); c=1;}
-<ABSTRACT>"\n"                     { BEGIN INITIAL; }
+<ABSTRACT>{teste}                      { ; }
+<ABSTRACT>"({"[^\}]*"})"            { ; }
+<ABSTRACT>"{{"[^\}]*"}}"         { ; }
+<ABSTRACT>[^'''|\{\{|\n]*      { printf("%s", yytext); }
+<ABSTRACT>"\n"                     {i=1; BEGIN INITIAL; }
 
 <CATEGORY>.*/"]]"                  { printf("\n%s", yytext); BEGIN INITIAL;}
 
