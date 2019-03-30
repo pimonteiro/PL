@@ -2,10 +2,12 @@
 #include <string.h>
 #include "include/article.h"
 
+#include <stdio.h>
 
 Article new_article(){
     Article a = (Article) malloc(sizeof(struct article));
     a->n_category = 0;
+    a->n_words = 0;
     return a;
 }
 
@@ -19,14 +21,31 @@ void add_info(Article a, char* t, int size){
     a->info = t;
 }
 
-void add_abstract(Article a, char* t, int size){
-    a->abstract = malloc(sizeof(size));
-    a->abstract = t;
+void add_url(Article a, char* t, int size){
+    int length = size + strlen(a->title);
+    a->url = malloc(sizeof(length+1));
+    int i;
+    for(i = 0; i < size; i++){
+        a->url[i] = t[i];
+    }
+    for(i = size; i < length; i++){
+        a->url[i] = a->title[i - size];
+        
+    }
+    a->url[i] = '\0';
 }
 
-void add_url(Article a, char* t, int size){
-    a->url = malloc(sizeof(size));
-    a->url = t;
+void add_abstract(Article a, char* t, int size){
+    char** new = malloc(sizeof(new) * (a->n_words + 1));
+    int i;
+    for(i = 0; i < a->n_words; i++){
+        new[i] = malloc(sizeof(a->abstract[i]));
+        new[i] = a->abstract[i];
+    }
+    new[i] = malloc(sizeof(size));
+    new[i] = t;
+    a->n_words++;
+    a->abstract = new;
 }
 
 void add_category(Article a, char* t, int size){
