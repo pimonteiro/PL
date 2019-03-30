@@ -12,10 +12,14 @@
                                         <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">\n\
                                         <link rel=\"stylesheet\" type=\"text/css\" href=\"../styles/styles.css\">\n</head>\n<body>\n", s);
 #define END_HTML(f)     fprintf(f,"</body>\n</html>");
+#define IMG_URL         "#/media/File:"
+
 
 int index = 0;
 
 // Further testing needed
+// Descobrir palavras que parecem imagens PODIA SER TRABALHO DO FLEX
+// printf(f, "<img src=\"%s%s%s\">", a->url, IMG_URL, word);
 static void print_info_table(Article a, FILE* f){
     fprintf(f,"<table class=\"blueTable\">\n\t<tbody>\n");
 	char delim[] = "=";
@@ -38,7 +42,7 @@ static void print_index(char* title, FILE* f){
 }
 
 static void print_article(Article  a){
-    char* title;
+    char title[20];
     sprintf(title,"%d.html",index);
 
     FILE* f = fopen(title,"w");
@@ -59,7 +63,18 @@ static void print_article(Article  a){
     print_info_table(a, f);
     fprintf(f,"<p>");
     for(int i = 0; i < a->n_words; i++){
-        fprintf(f,"%s ", a->abstract[i]);
+        char* word = a->abstract[i];
+        if(strstr(word,"[[") && strstr(word,"]]")){
+            int size = strlen(word);
+            char w[size-3];
+            for(int j = 2; j < size-2; j++)
+                w[j-2] = word[j];
+
+            w[size-4] = '\0';
+            fprintf(f,"<b>%s</b> ", w);
+        }
+        else
+            fprintf(f,"%s ", word);
     }
     fprintf(f,"</p>\n<br>\n");
     END_HTML(f);

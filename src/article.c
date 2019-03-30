@@ -2,6 +2,7 @@
 #include <string.h>
 #include "include/article.h"
 
+#include <stdio.h>
 
 Article new_article(){
     Article a = (Article) malloc(sizeof(struct article));
@@ -21,8 +22,17 @@ void add_info(Article a, char* t, int size){
 }
 
 void add_url(Article a, char* t, int size){
-    a->url = malloc(sizeof(size));
-    a->url = t;
+    int length = size + strlen(a->title);
+    a->url = malloc(sizeof(length+1));
+    int i;
+    for(i = 0; i < size; i++){
+        a->url[i] = t[i];
+    }
+    for(i = size; i < length; i++){
+        a->url[i] = a->title[i - size];
+        
+    }
+    a->url[i] = '\0';
 }
 
 void add_abstract(Article a, char* t, int size){
