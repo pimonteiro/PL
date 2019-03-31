@@ -23,27 +23,27 @@ wordPT  ({word}+{marks}*{word}*)
 silence (.|\n)
 teste   (&[^;]*;) 
 %%
-<INITIAL>"<title>"             {a = new_article(); add_article(vector, a); BEGIN TITLE; }
+<INITIAL>"<title>"             {Article article = new_article(); a=article; BEGIN TITLE; }
 <INITIAL>"{Info/"              { BEGIN INFO; }
 <INITIAL>"'''"                 {if(c==0) BEGIN ABSTRACT; }
 <INITIAL>^\[\["Categoria:"      { BEGIN CATEGORY; }
 
 
-<TITLE>({wordPT}" "?)+/"<\/title>" { add_title(article, yytext, yyleng);
+<TITLE>({wordPT}" "?)+/"<\/title>" { add_title(a, yytext, yyleng);
                                      BEGIN INITIAL; }
 
 <INFO>&[^;]*;                            { ; }
-<INFO>{wordPT}\n                  {add_info(article, yytext, yyleng);}
-<INFO>"|"[^=]+=.+"\n"             {  add_info(article, yytext+1, yyleng-1); }
+<INFO>{wordPT}\n                  {add_info(a, yytext, yyleng);}
+<INFO>"|"[^=]+=.+"\n"             {  add_info(a, yytext+1, yyleng-1); }
 <INFO>^"}}"                       { BEGIN INITIAL; } 
 
 <ABSTRACT>{teste}                      { ; }
 <ABSTRACT>"({"[^\}]*"})"            { ; }
 <ABSTRACT>"{{"[^\}]*"}}"         { ; }
-<ABSTRACT>[^'''|\{\{|\n]*      { add_abstract(article, yytext, yyleng); }
+<ABSTRACT>[^'''|\{\{|\n]*      { add_abstract(a, yytext, yyleng); }
 <ABSTRACT>"\n"                     {c=1; BEGIN INITIAL; }
 
-<CATEGORY>.*/"]]"                  { add_category(article, yytext, yyleng); BEGIN INITIAL;}
+<CATEGORY>.*/"]]"                  { add_category(a, yytext, yyleng); BEGIN INITIAL;}
 
 
 <*>{silence}
@@ -52,12 +52,6 @@ teste   (&[^;]*;)
 
 int main(int argc, char* argv[]) {
   yylex();
-
-  if(strcmp(argv[argc-1], "--latex"){
-    latex_exporter(vector, argv+1, argc-2);
-  }
-  if(strcmp(argv[argc-1], "--md"))
-    markdown_exporter(vector, argc+1, argc-2);
-  else html_exporter(vector, argv+1, argc-2);
+  print_article(a);
 }
     

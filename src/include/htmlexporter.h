@@ -4,5 +4,5 @@
 #include "vector.h"
 
 void html_export(Vector v, char** categories, int n_categories);
-
+void print_article(Article a);
 #endif

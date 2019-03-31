@@ -13,15 +13,13 @@ int i = 0;
 %x CATEGORY
 %x INFO
 %x ABSTRACT 
-%x AUX
 
 word    ([a-zA-Z]+)
 marks   (à|á|â|ã|é|è|ê|ẽ|í|ì|î|ĩ|ó|ò|ô|õ|ú|ù|û|ũ)
 wordPT  ({word}+{marks}*{word}*)
 silence (.|\n)
-teste   (&[^;]*;[^;]*;) 
 %%
-<INITIAL>"<title>"                 { BEGIN TITLE; }
+<INITIAL>"<title>"                 {i=0; BEGIN TITLE; }
 <INITIAL>"{Info/"                  { BEGIN INFO; }
 <INITIAL>"'''"                     {if(i==0) BEGIN ABSTRACT; }
 <INITIAL>^\[\["Categoria:"         { BEGIN CATEGORY; }
@@ -29,18 +27,16 @@ teste   (&[^;]*;[^;]*;)
 
 <TITLE>({wordPT}" "?)+/"<\/title>" { printf("%s\n", yytext); BEGIN INITIAL; }
 
-<INFO>&[^;]*;                            { ; }
 <INFO>{wordPT}\n                   {printf("%s", yytext);}
 <INFO>"|"[^=]+=.+"\n"              {  printf("%s", yytext+1); }
 <INFO>^"}}"                        { BEGIN INITIAL; } 
 
 <ABSTRACT>"({"[^\}]*"})"           { ; }
 <ABSTRACT>"{{"[^\}]*"}}"           { ; }
-<ABSTRACT>[^'''|\{\{|\n]*         { printf("%s", yytext); }
+<ABSTRACT>[^'''|\{\}|\n]*      { printf("%s", yytext); }
 <ABSTRACT>"\n"                     {i=1; BEGIN INITIAL; }
 
 <CATEGORY>.*/"]]"                  { printf("\n%s", yytext); BEGIN INITIAL;}
-
 
 <*>{silence}
 
