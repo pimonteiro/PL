@@ -26,7 +26,9 @@ wordPT  ({word}+{marks}*{word}*)
 silence (.|\n)
 teste   (&[^;]*;) 
 %%
-<INITIAL>"<title>"             {Article article = new_article(); a = article; BEGIN TITLE; }
+<INITIAL>"<title>"             {Article article = new_article();
+                                 a = article; add_vector(vector,a);
+                                 BEGIN TITLE; }
 <INITIAL>"{Info/"              { BEGIN INFO; }
 <INITIAL>"'''"                 {if(c==0) BEGIN ABSTRACT; }
 <INITIAL>^\[\["Categoria:"      { BEGIN CATEGORY; }
