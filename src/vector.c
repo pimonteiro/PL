@@ -22,9 +22,7 @@ void add_article(Vector v, Article a){
             newVec[i] = v->vector[i];
         }
         v->vector = newVec;
-        v->used++;
+        v->used;
     }
-    else {
-        v->vector[v->used++] = a; //Acho que nao vale a pena fazer uma cópia
-    }
+    v->vector[v->used++] = a; //Acho que nao vale a pena fazer uma cópia
 }

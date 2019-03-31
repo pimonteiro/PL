@@ -81,7 +81,7 @@ void latex_export(char* name, Vector v, char* category){
     for(i = 0; i < v->used; i++){
         Article a = v->vector[i];
         for(int j = 0; j < a->n_category; j++){
-            if(strcmp(a->category[i], category) == 0){
+            if(strcmp(a->category[j], category) == 0){
                 print_article(a,f);
                 break;
             }
