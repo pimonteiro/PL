@@ -37,7 +37,19 @@ static void print_article(Article a, FILE* f){
     fprintf(f,"\\end{tabular}\\newline\n\\vspace{2cm}\n\n\n");
 
     for(int i = 0; i < a->n_words; i++){
-        fprintf(f,"%s ", a->abstract[i]);
+        char* word = a->abstract[i];
+        if(strstr(word,"[[") && strstr(word,"]]")){
+            int size = strlen(word);
+            char w[size-3];
+            for(int j = 2; j < size-2; j++)
+                w[j-2] = word[j];
+
+            w[size-4] = '\0';
+            fprintf(f,"\\textbf{%s} ", w);
+        }
+        else
+            fprintf(f,"%s ", word);
+
     }
     fprintf(f,"\n\\newpage\n");
 }
