@@ -3,12 +3,13 @@
 
 typedef struct article{
   char*  title;
-  char* info;
+  char** info;
   char**  abstract;
   char** category;
+  char*  url;
   int n_category;
   int n_words;
-  char*  url;
+  int n_info;
 }* Article;
 
 Article new_article();
