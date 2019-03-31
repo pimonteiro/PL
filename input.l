@@ -8,9 +8,10 @@
 #include "include/latexexporter.h"
 #include "include/markexporter.h"
 
-Vector vector = new_vector();
+Vector vector;
 Article a;
 int c = 0;
+int v = 0;
 %}
 
 %x LINK
@@ -26,7 +27,9 @@ wordPT  ({word}+{marks}*{word}*)
 silence (.|\n)
 teste   (&[^;]*;) 
 %%
-<INITIAL>"<title>"             {Article article = new_article();
+<INITIAL>"<title>"             {if(v=0)vector = new_vector();
+                                 v++;
+                                 Article article = new_article();
                                  a = article; add_vector(vector,a);
                                  BEGIN TITLE; }
 <INITIAL>"{Info/"              { BEGIN INFO; }

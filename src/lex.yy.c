@@ -567,11 +567,13 @@ char *yytext;
 #include "include/latexexporter.h"
 #include "include/markexporter.h"
 
-Vector vector = new_vector();
+Vector vector;
+Article a;
 int c = 0;
-#line 573 "lex.yy.c"
-
+int v = 0;
 #line 575 "lex.yy.c"
+
+#line 577 "lex.yy.c"
 
 #define INITIAL 0
 #define LINK 1
@@ -797,9 +799,9 @@ YY_DECL
 		}
 
 	{
-#line 27 "input.l"
+#line 29 "input.l"
 
-#line 803 "lex.yy.c"
+#line 805 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -859,22 +861,26 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 28 "input.l"
-{Article article = new_article(); BEGIN TITLE; }
+#line 30 "input.l"
+{if(v=0)vector = new_vector();
+                                 v++;
+                                 Article article = new_article();
+                                 a = article; add_vector(vector,a);
+                                 BEGIN TITLE; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 29 "input.l"
+#line 35 "input.l"
 { BEGIN INFO; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 30 "input.l"
+#line 36 "input.l"
 {if(c==0) BEGIN ABSTRACT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 31 "input.l"
+#line 37 "input.l"
 { BEGIN CATEGORY; }
 	YY_BREAK
 case 5:
@@ -882,60 +888,60 @@ case 5:
 (yy_c_buf_p) = yy_cp -= 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 34 "input.l"
-{ add_title(article, yytext, yyleng);
+#line 40 "input.l"
+{ add_title(a, yytext, yyleng);
                                      BEGIN INITIAL; }
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 37 "input.l"
+#line 43 "input.l"
 { ; }
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 38 "input.l"
-{add_info(article, yytext, yyleng);}
+#line 44 "input.l"
+{add_info(a, yytext, yyleng);}
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 39 "input.l"
-{  add_info(article, yytext+1, yyleng-1); }
+#line 45 "input.l"
+{  add_info(a, yytext+1, yyleng-1); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 40 "input.l"
+#line 46 "input.l"
 { BEGIN INITIAL; } 
 	YY_BREAK
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 42 "input.l"
+#line 48 "input.l"
 { ; }
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 43 "input.l"
+#line 49 "input.l"
 { ; }
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 44 "input.l"
+#line 50 "input.l"
 { ; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 45 "input.l"
-{ add_abstract(article, yytext, yyleng); }
+#line 51 "input.l"
+{ add_abstract(a, yytext, yyleng); }
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 46 "input.l"
+#line 52 "input.l"
 {c=1; BEGIN INITIAL; }
 	YY_BREAK
 case 15:
@@ -943,21 +949,21 @@ case 15:
 (yy_c_buf_p) = yy_cp -= 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 48 "input.l"
-{ add_category(article, yytext, yyleng); BEGIN INITIAL;}
+#line 54 "input.l"
+{ add_category(a, yytext, yyleng); BEGIN INITIAL;}
 	YY_BREAK
 case 16:
 /* rule 16 can match eol */
 YY_RULE_SETUP
-#line 51 "input.l"
+#line 57 "input.l"
 
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 53 "input.l"
+#line 59 "input.l"
 ECHO;
 	YY_BREAK
-#line 961 "lex.yy.c"
+#line 967 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(LINK):
 case YY_STATE_EOF(TITLE):
@@ -1971,7 +1977,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 53 "input.l"
+#line 59 "input.l"
 
 
 void print_help(){
