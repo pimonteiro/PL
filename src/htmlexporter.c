@@ -19,15 +19,14 @@ int ind = 0;
 //FALTA SUBSTITUIR OS ESPAÇOS NO TITULO POR _ PARA OS LINKS
 static void print_info_table(Article a, FILE* f){
     fprintf(f,"<table class=\"blueTable\">\n\t<tbody>\n");
-    for(int i = 0; i < a->n_info; i++){
+    for(int i = 1; i < a->n_info; i++){
         char delim[] = "=";
         char *ptr = strtok(a->info[i], delim);
         fprintf(f,"\t\t<tr>\n");
         fprintf(f, "\t\t\t<td>%s</td>\n\t\t\t<td>", ptr);
         ptr = strtok(NULL, delim); // Sei que existirá
         if(ptr == NULL){
-            printf("Something bad on xml format.\n");
-            exit(1);
+            fprintf(f," ");
         }
         if(strstr(ptr,".png") || strstr(ptr,".jpg") || strstr(ptr,".jpeg"))
             fprintf(f,"<img src=\"%s/%s/%s%s\">", a->url, a->title, IMG_URL, ptr);
