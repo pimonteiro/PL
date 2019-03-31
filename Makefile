@@ -80,3 +80,7 @@ clean:
 	@rm -rd $(DOC_DIR)/*
 	@echo ""
 	@echo "...✓ done!"
+
+prepare:
+	@flex input.l
+	@mv lex.yy.c src/

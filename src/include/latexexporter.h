@@ -3,6 +3,6 @@
 
 #include "vector.h"
 
-void latex_export(char* filename, Vector v, char** categories, int n_categories);
+void latex_export(char* filename, Vector v, char* category);
 
 #endif
