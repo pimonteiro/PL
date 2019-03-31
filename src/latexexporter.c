@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define IMG_URL         "#/media/File:"
 
 static void print_info_table(FILE* f, Article a){
     fprintf(f, "\\hline\n");
@@ -22,7 +21,6 @@ static void print_info_table(FILE* f, Article a){
         fprintf(f,"%s \\\\\n",ptr);
         fprintf(f,"\\hline\n");
     }
-    fprintf(f,"\\hline\n");
 }
 
 static void print_article(Article a, FILE* f){
@@ -35,8 +33,8 @@ static void print_article(Article a, FILE* f){
     fprintf(f,"\\end{itemize}\n");
     fprintf(f,"\\subsection{Abstract}\n\n");
     fprintf(f,"\\begin{tabular}{|p{3cm}||p{3cm}|p{3cm}|p{3cm}|}\n\\hline\n\\multicolumn{2}{|c|}{Info} \\\\\n\\hline\n");
-    print_info_table(f, a->info);
-    fprintf(f,"\\end{tabular}\n");
+    print_info_table(f, a);
+    fprintf(f,"\\end{tabular}\\newline\n\\vspace{2cm}\n\n\n");
 
     for(int i = 0; i < a->n_words; i++){
         fprintf(f,"%s ", a->abstract[i]);
@@ -69,8 +67,10 @@ void latex_export(char* name, Vector v, char** categories, int n_categories){
     Article a = v->vector[i];
     for(int j = 0; j < a->n_category; j++){
         int c = is_category(a->category[j],categories, n_categories);
-        if(c)
+        if(c){
             print_article(a,f);
+            break;
+        }
     }
     fprintf(f,"\\end{document}\n");
 

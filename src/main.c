@@ -28,7 +28,7 @@ int main(){
     char* cat[2];
     cat[0] = "Historia";
     cat[1] = "Cultura";
-    //latex_export("teste1", v,cat,2);
-    html_export(v,cat,2);
+    latex_export("teste1", v,cat,2);
+    //html_export(v,cat,2);
     return 0;
 }
