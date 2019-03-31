@@ -8,7 +8,7 @@
 #include "include/latexexporter.h"
 #include "include/markexporter.h"
 
-Vector vector = new_vector();
+Vector vector;
 Article a;
 int c = 0;
 %}
@@ -27,7 +27,7 @@ silence (.|\n)
 teste   (&[^;]*;) 
 %%
 <INITIAL>"<title>"             {Article article = new_article();
-                                 a = article; add_vector(vector,a);
+                                 a = article; add_article(vector,a);
                                  BEGIN TITLE; }
 <INITIAL>"{Info/"              { BEGIN INFO; }
 <INITIAL>"'''"                 {if(c==0) BEGIN ABSTRACT; }
@@ -56,25 +56,29 @@ teste   (&[^;]*;)
 %%
 
 void print_help(){
-  printf("./prog <category> <input file> html\n");
-  printf("./prog <category> <input file> latex <output file>\n");
-  printf("./prog <category> <input file> markdown <output file>\n");
+  printf("./prog <category> html \n");
+  printf("./prog <category> latex <output file> < input\n");
+  printf("./prog <category> markdown <output file> < input\n");
 }
 
 int main(int argc, char* argv[]) {
-  if(argc < 4){
+  if(argc < 3){
     print_help();
     return 1;
   }
+  vector = new_vector();
   yylex();
-  if(strcmp(argv[3],"html")){
+  if(strcmp(argv[2],"html") == 0){
     html_export(vector, argv[1]);
   }
-  else if(strcmp(argv[3],"latex")){
-    latex_export(argv[4], vector, argv[1]);
+  else if(strcmp(argv[2],"latex") == 0){
+    latex_export(argv[3], vector, argv[1]);
   } 
-  else if(strcmp(argv[3],"markdown")){
-    markdown_export(argv[4], vector, argv[1]);
+  else if(strcmp(argv[2],"markdown") == 0){
+    markdown_export(argv[3], vector, argv[1]);
+  }
+  else {
+    printf("Bad option.\n");
   }
   return 0;
 }

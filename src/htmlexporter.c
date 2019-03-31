@@ -1,5 +1,6 @@
 #include "include/article.h"
 #include "include/vector.h"
+#include "include/auxFunc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -95,7 +96,7 @@ void html_export(Vector v, char* category){
     for(i = 0; i < v->used; i++){
         Article a = v->vector[i];
         for(int j = 0; j < a->n_category; j++){
-            if(strcmp(a->category[i], category)){
+            if(strcmp(a->category[i], category) == 0){
                 print_article(a);
                 print_index(a->title, homepage);
                 ind++;
