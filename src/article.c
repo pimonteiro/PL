@@ -9,7 +9,7 @@ Article new_article(){
     a->n_category = 0;
     a->n_words = 0;
     a->n_info = 0;
-    a->url = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";
+    a->url = "https://pt.wikipedia.org/wiki";
     return a;
 }
 

@@ -9,14 +9,13 @@
 
 static void print_info_table(FILE* f, Article a){
     fprintf(f, "\\hline\n");
-    for(int i = 0; i < a->n_info; i++){
+    for(int i = 1; i < a->n_info; i++){
         char delim[] = "=";
         char *ptr = strtok(a->info[i], delim);
         fprintf(f,"%s & ", ptr);
-        ptr = strtok(NULL, delim); // Sei que existirá
+        ptr = strtok(NULL, delim);
         if(ptr == NULL){
-            printf("Something bad on xml format.\n");
-            exit(1);
+            fprintf(f," ");
         }
         fprintf(f,"%s \\\\\n",ptr);
         fprintf(f,"\\hline\n");
@@ -25,14 +24,21 @@ static void print_info_table(FILE* f, Article a){
 
 static void print_article(Article a, FILE* f){
     fprintf(f,"\\section{%s}\n", a->title);
-    fprintf(f,"\\href{%s}{\\textit{Artigo Original}}\n\\newline\n", a->url);
+    fprintf(f,"\\href{%s/",a->url);
+    char br[] = " ";
+    char* pp = strtok(a->title, br);
+    fprintf(f,"%s", pp);
+    while((pp = strtok(NULL,br)) != NULL){
+        fprintf(f,"_%s", pp);
+    }
+    fprintf(f,"}{\\textit{Artigo Original}}\n\\newline\n");
     fprintf(f,"\\textbf{Categorias:}\n\\begin{itemize}\n");
     for(int i = 0; i < a->n_category; i++){
         fprintf(f,"\t\\item %s;\n", a->category[i]);
     }
     fprintf(f,"\\end{itemize}\n");
     fprintf(f,"\\subsection{Abstract}\n\n");
-    fprintf(f,"\\begin{tabular}{|p{3cm}||p{3cm}|p{3cm}|p{3cm}|}\n\\hline\n\\multicolumn{2}{|c|}{Info} \\\\\n\\hline\n");
+    fprintf(f,"\\begin{tabular}{|c|c|}\n\\hline\n\\multicolumn{2}{|c|}{Info} \\\\\n\\hline\n");
     print_info_table(f, a);
     fprintf(f,"\\end{tabular}\\newline\n\\vspace{2cm}\n\n\n");
 
@@ -75,7 +81,7 @@ void latex_export(char* name, Vector v, char* category){
     for(i = 0; i < v->used; i++){
         Article a = v->vector[i];
         for(int j = 0; j < a->n_category; j++){
-            if(strcmp(a->category[i], category)){
+            if(strcmp(a->category[i], category) == 0){
                 print_article(a,f);
                 break;
             }

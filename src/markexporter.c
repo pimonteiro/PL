@@ -8,17 +8,24 @@
 
 
 static void print_info_table(FILE* f, Article a){
-    for(int i = 0; i < a->n_info; i++){
+    for(int i = 1; i < a->n_info; i++){
         char delim[] = "=";
         char *ptr = strtok(a->info[i], delim);
         fprintf(f, "| %s | ", ptr);
-        ptr = strtok(NULL, delim); // Sei que existirá
+        ptr = strtok(NULL, delim);
         if(ptr == NULL){
-            printf("Something bad on xml format.\n");
-            exit(1);
+            fprintf(f," |\n");
+        } else if(strstr(ptr,".png") || strstr(ptr,".jpg") || strstr(ptr,".jpeg")){
+            fprintf(f, "![Pic](%s/", a->url);
+            char br[] = " ";
+            char* save;
+            char* pp = __strtok_r(a->title, br, &save);
+            fprintf(f,"%s", pp);
+            while((pp = __strtok_r(save, br, &save)) != NULL){
+                fprintf(f,"_%s", pp);
+            }
+            fprintf(f,"/%s%s) |\n", IMG_URL, ptr);
         }
-        if(strstr(ptr,".png") || strstr(ptr,".jpg") || strstr(ptr,".jpeg"))
-            fprintf(f,"![Pic](%s/%s/%s%s) |\n", a->url, a->title, IMG_URL, ptr);
         else
             fprintf(f,"%s |\n",ptr);
     }
@@ -26,7 +33,14 @@ static void print_info_table(FILE* f, Article a){
 
 static void print_article(Article a, FILE* f){
     fprintf(f,"## %s\n", a->title);
-    fprintf(f,"### [Artigo Original](%s/%s)\n", a->url, a->title);
+    fprintf(f,"### [Artigo Original](%s/", a->url);
+    char br[] = " ";
+    char* pp = strtok(a->title, br);
+    fprintf(f,"%s", pp);
+    while((pp = strtok(NULL,br)) != NULL){
+        fprintf(f,"_%s", pp);
+    }
+    fprintf(f,"\n");
     fprintf(f,"Categorias:\n");
     for(int i = 0; i < a->n_category; i++){
         fprintf(f,"- %s;\n", a->category[i]);
@@ -74,7 +88,7 @@ void markdown_export(char* name, Vector v, char* category){
     for(i = 0; i < v->used; i++){
         Article a = v->vector[i];
         for(int j = 0; j < a->n_category; j++){
-            if(strcmp(a->category[i], category)){
+            if(strcmp(a->category[i], category) == 0){
                 print_article(a,f);
                 break;
             }
