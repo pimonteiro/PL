@@ -12,7 +12,6 @@
                                         <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">\n\
                                         <link rel=\"stylesheet\" type=\"text/css\" href=\"../styles/styles.css\">\n</head>\n<body>\n", s);
 #define END_HTML(f)     fprintf(f,"</body>\n</html>");
-#define IMG_URL         "#/media/File:"
 
 
 int ind = 0;
@@ -106,7 +105,6 @@ void html_export(Vector v, char** categories, int n_categories){
             }
         }
     }
-
     fprintf(homepage,"</ul>\n");
     END_HTML(homepage);
     fclose(homepage);
