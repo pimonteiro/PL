@@ -54,7 +54,7 @@ static void print_article(Article a, FILE* f){
     fprintf(f,"\n\\newpage\n");
 }
 
-void latex_export(char* name, Vector v, char** categories, int n_categories){
+void latex_export(char* name, Vector v, char* category){
     char* filename = malloc(sizeof(name) +4);
     strcat(filename,name);
     strcat(filename,".tex");
@@ -67,10 +67,7 @@ void latex_export(char* name, Vector v, char** categories, int n_categories){
 
     // Write beginning of latex
     fprintf(f,"\\documentclass[a4paper]{article}\n\\usepackage[pdftex]{hyperref}\n\\begin{document}\n\\title{Artigos Wikipedia \\\\\n\\
-            \\large ");
-    for(int i = 0; i < n_categories; i++)
-        fprintf(f,"%s ", categories[i]);
-    fprintf(f,"}\n");
+            \\large %s }\n", category);
     fprintf(f,"\\maketitle\n\\author{Wikipedia}\n\\date{\\today}\n\\setcounter{tocdepth}{1}\n\\tableofcontents\n\n\\newpage\n");
 
     // Write articles
@@ -78,8 +75,7 @@ void latex_export(char* name, Vector v, char** categories, int n_categories){
     for(i = 0; i < v->used; i++){
         Article a = v->vector[i];
         for(int j = 0; j < a->n_category; j++){
-            int c = is_category(a->category[j],categories, n_categories);
-            if(c){
+            if(strcmp(a->category[i], category)){
                 print_article(a,f);
                 break;
             }

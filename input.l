@@ -5,6 +5,9 @@
 #include "include/article.h"
 #include "include/vector.h"
 #include "include/htmlexporter.h"
+#include "include/latexexporter.h"
+#include "include/markexporter.h"
+
 Vector vector = new_vector();
 int c = 0;
 %}
@@ -49,8 +52,27 @@ teste   (&[^;]*;)
 
 %%
 
+void print_help(){
+  printf("./prog <category> <input file> html\n");
+  printf("./prog <category> <input file> latex <output file>\n");
+  printf("./prog <category> <input file> markdown <output file>\n");
+}
+
 int main(int argc, char* argv[]) {
+  if(argc < 4){
+    print_help();
+    return 1;
+  }
   yylex();
-  print_article(article);
+  if(strcmp(argv[3],"html")){
+    html_export(vector, argv[1]);
+  }
+  else if(strcmp(argv[3],"latex")){
+    latex_export(argv[4], vector, argv[1]);
+  } 
+  else if(strcmp(argv[3],"markdown")){
+    markdown_export(argv[4], vector, argv[1]);
+  }
+  return 0;
 }
     

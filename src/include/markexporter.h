@@ -3,6 +3,6 @@
 
 #include "vector.h"
 
-void markdown_exporter(char* name, Vector v, char** categories, int n_categories);
+void markdown_export(char* name, Vector v, char* category);
 
 #endif

@@ -53,7 +53,7 @@ static void print_article(Article a, FILE* f){
     fprintf(f,"\n___\n___\n___\n___\n___\n");
 }
 
-void markdown_exporter(char* name, Vector v, char** categories, int n_categories){
+void markdown_export(char* name, Vector v, char* category){
     char* filename = malloc(sizeof(name) + 3);
     strcat(filename,name);
     strcat(filename,".md");
@@ -66,8 +66,7 @@ void markdown_exporter(char* name, Vector v, char** categories, int n_categories
 
     // Write beginning of markdown
     fprintf(f,"# Artigos Wikipedia\n");
-    for(int i = 0; i < n_categories; i++)
-        fprintf(f,"### %s ", categories[i]);
+    fprintf(f,"### %s ", category);
     fprintf(f,"\n___\n___\n___\n");
 
     // Write articles
@@ -75,8 +74,7 @@ void markdown_exporter(char* name, Vector v, char** categories, int n_categories
     for(i = 0; i < v->used; i++){
         Article a = v->vector[i];
         for(int j = 0; j < a->n_category; j++){
-            int c = is_category(a->category[j],categories, n_categories);
-            if(c){
+            if(strcmp(a->category[i], category)){
                 print_article(a,f);
                 break;
             }
