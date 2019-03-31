@@ -11,6 +11,7 @@
 Vector vector;
 Article a;
 int c = 0;
+int v = 0;
 %}
 
 %x LINK
@@ -26,7 +27,9 @@ wordPT  ({word}+{marks}*{word}*)
 silence (.|\n)
 teste   (&[^;]*;) 
 %%
-<INITIAL>"<title>"             {Article article = new_article();
+<INITIAL>"<title>"             {if(v=0)vector = new_vector();
+                                 v++;
+                                 Article article = new_article();
                                  a = article; add_article(vector,a);
                                  BEGIN TITLE; }
 <INITIAL>"{Info/"              { BEGIN INFO; }
@@ -66,7 +69,6 @@ int main(int argc, char* argv[]) {
     print_help();
     return 1;
   }
-  vector = new_vector();
   yylex();
   if(strcmp(argv[2],"html") == 0){
     html_export(vector, argv[1]);
