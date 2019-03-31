@@ -9,6 +9,7 @@ Article new_article(){
     a->n_category = 0;
     a->n_words = 0;
     a->n_info = 0;
+    a->url = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal"
     return a;
 }
 
@@ -25,10 +26,6 @@ void add_info(Article a, char* t, int size){
     new_info[i] = strdup(t);
     a->n_info++;
     a->info = new_info;
-}
-
-void add_url(Article a, char* t, int size){
-    a->url = strdup(t);
 }
 
 void add_abstract(Article a, char* t, int size){
