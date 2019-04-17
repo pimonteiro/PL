@@ -1,5 +1,7 @@
-BEGIN { RS="\n+"}
+BEGIN { RS="\n"; print "NºExtract -> NºRecords"; }
 
 $1 == 1 {extracts++;}
+$1 != "" {lines[extracts]++;}
 
-END { print "Número de extractos: " extracts "\n"; print "Records: " NR; }
+
+END { for(i in lines) {print i " -> " lines[i] }; print "\nTotal Extracts: " extracts;}
