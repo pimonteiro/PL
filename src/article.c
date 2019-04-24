@@ -29,7 +29,7 @@ void add_info(Article a, char* t, int size){
 }
 
 void add_abstract(Article a, char* t, int size){
-    char** new = malloc(sizeof(new) * (a->n_words + 1));
+    char** new = malloc(sizeof(char*) * (a->n_words + 1));
     int i;
     for(i = 0; i < a->n_words; i++){
         new[i] = strdup(a->abstract[i]);

@@ -1,4 +1,4 @@
-#include "include/article.h"
+#include"include/article.h"
 #include "include/vector.h"
 #include "include/auxFunc.h"
 
@@ -16,7 +16,7 @@
 
 int ind = 0;
 
-//FALTA SUBSTITUIR OS ESPAÇOS NO TITULO POR _ PARA OS LINKS
+//FALTA SUBSTITUIR OS ESPAÇOS NO TITULO POR _ PAR:A OS LINKS
 static void print_info_table(Article a, FILE* f){
     fprintf(f,"<table class=\"blueTable\">\n\t<tbody>\n");
     for(int i = 1; i < a->n_info; i++){
@@ -28,6 +28,7 @@ static void print_info_table(Article a, FILE* f){
         if(ptr == NULL){
             fprintf(f," ");
         }
+        if(ptr == NULL ) ptr = "";
         if(strstr(ptr,".png") || strstr(ptr,".jpg") || strstr(ptr,".jpeg"))
             fprintf(f,"<img src=\"%s/%s/%s%s\">", a->url, a->title, IMG_URL, ptr);
         else
@@ -74,7 +75,7 @@ static void print_article(Article  a){
             fprintf(f,"<b>%s</b> ", w);
         }
         else
-            fprintf(f,"%s ", word);
+        fprintf(f,"%s ", word);
     }
     fprintf(f,"</p>\n<br>\n");
     END_HTML(f);
@@ -95,7 +96,7 @@ void html_export(Vector v, char* category){
     for(i = 0; i < v->used; i++){
         Article a = v->vector[i];
         for(int j = 0; j < a->n_category; j++){
-            if(strcmp(a->category[i], category) == 0){
+            if(strcmp(a->category[j], category) == 0){
                 print_article(a);
                 print_index(a->title, homepage);
                 ind++;

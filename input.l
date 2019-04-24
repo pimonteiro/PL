@@ -39,13 +39,13 @@ teste   (&[^;]*;)
 
 <INFO>&[^;]*;                            { ; }
 <INFO>{wordPT}\n                  {add_info(a, yytext, yyleng);}
-<INFO>"|"[^=]+=.+"\n"             {  add_info(a, yytext+1, yyleng-1); }
+<INFO>"|"[^=]+=.+"\n"             { add_info(a, yytext+1, yyleng-1); }
 <INFO>^"}}"                       { BEGIN INITIAL; } 
 
 <ABSTRACT>{teste}                      { ; }
 <ABSTRACT>"({"[^\}]*"})"            { ; }
 <ABSTRACT>"{{"[^\}]*"}}"         { ; }
-<ABSTRACT>[^'''|\{\{|\n]*      { add_abstract(a, yytext, yyleng); }
+<ABSTRACT>[^'''|\{\{|\[\]|\n]*      { add_abstract(a, yytext, yyleng); }
 <ABSTRACT>"\n"                     {c=1; BEGIN INITIAL; }
 
 <CATEGORY>.*/"]]"                  { add_category(a, yytext, yyleng); BEGIN INITIAL;}
