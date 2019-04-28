@@ -1,6 +1,6 @@
 
 function generateHTML() {
-  print "<!DOCTYPE html>\n<html>\n<meta charset=\"UTF-8\">\n<header>\n<h1>Dicionario Implícito</h1>\n"> "word_types.html"
+  print "<!DOCTYPE html>\n<html>\n<meta charset=\"UTF-8\">\n<header>\n<h1>Lista de Palavras</h1>\n"> "word_types.html"
   print "<link rel=\"stylesheet\" type=\"text/css\" href=\"../stylesC.css\">\n</header>"> "word_types.html"
   
   print "<body><table border='1' style='float: left'>"> "word_types.html"
