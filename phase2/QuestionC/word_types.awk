@@ -1,11 +1,12 @@
 
 function generateHTML() {
-  print "<html>\n<meta charset=\"UTF-8\">\n<header>\n<h1>Dicionario Implícito</h1>\n</header>"> "word_types.html"
+  print "<!DOCTYPE html>\n<html>\n<meta charset=\"UTF-8\">\n<header>\n<h1>Lista de Palavras</h1>\n"> "word_types.html"
+  print "<link rel=\"stylesheet\" type=\"text/css\" href=\"../stylesC.css\">\n</header>"> "word_types.html"
   
   print "<body><table border='1' style='float: left'>"> "word_types.html"
   print "<tr><th> Verbo </th></tr>"> "word_types.html"
   for (i in verbs) {
-    print "<tr><td>", i ,"</td>></tr>"> "word_types.html";
+    print "<tr><td>", i ,"</td></tr>"> "word_types.html";
   }
   print "</table>" > "word_types.html"
 
