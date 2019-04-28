@@ -1,6 +1,6 @@
 function generateHTML() {
-  print "<html>\n<meta charset=\"UTF-8\">\n<header>\n<h1>Livro de Harry Potter</h1>\n"> "harry_character.html"
-  print "<link rel=\"stylesheet\" type=\"text/css\" href=\"../styles.css\">\n</header>"> "harry_character.html"
+  print "<!DOCTYPE html>\n<html>\n<meta charset=\"UTF-8\">\n<header>\n<h1>Livro de Harry Potter</h1>\n"> "harry_character.html"
+  print "<link rel=\"stylesheet\" type=\"text/css\" href=\"../stylesB.css\">\n</header>"> "harry_character.html"
   print" <body><h3>"> "harry_character.html"
   for(i in title) {
       print title[i], " "> "harry_character.html";
