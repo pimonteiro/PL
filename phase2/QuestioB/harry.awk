@@ -1,13 +1,15 @@
 function generateHTML() {
-  print "<html>\n<meta charset=\"UTF-8\">\n<header>\n<h1>Livro de Harry Potter</h1>\n</header>"> "harry_character.html"
+  print "<html>\n<meta charset=\"UTF-8\">\n<header>\n<h1>Livro de Harry Potter</h1>\n"> "harry_character.html"
+  print "<link rel=\"stylesheet\" type=\"text/css\" href=\"../styles.css\">\n</header>"> "harry_character.html"
   print" <body><h3>"> "harry_character.html"
   for(i in title) {
       print title[i], " "> "harry_character.html";
   }
   print "</h3><table border='1' style='float: left'>"> "harry_character.html"
-  print "<tr><th> Personagens </th></tr>"> "harry_character.html"
+  print "<tr><th> Index </th><th> Personagens </th></tr>"> "harry_character.html"
+  r = 0
   for (i in words) {
-    print "<tr><td>", i ,"</td></tr>"> "harry_character.html";
+    print "<tr><td>", r++, "</td><td>", i ,"</td></tr>"> "harry_character.html";
   }
   print "</table></body></html>" > "harry_character.html"
 }
@@ -28,6 +30,6 @@ $3 == "titulo", $3=="*" {
 }
 
 # $2 is the word in it's "true form"
-$5 == "NP"  {words[$2]++;}
+$5 == "NP"  {words[$3]++;}
 
 END { generateHTML();}
