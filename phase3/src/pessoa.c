@@ -13,7 +13,7 @@ typedef struct Pessoa
     int idMae;
     GList* filhos; //id dos filhos
     GList* eventos;
-    GList* historias; //char* as historias
+    char* historia; //char* as historias
  
 }Pessoa;
 
