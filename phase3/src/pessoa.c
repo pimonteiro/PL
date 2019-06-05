@@ -11,6 +11,8 @@ typedef struct Pessoa
     char* foto;
     int idPai;
     int idMae;
+    int idCasado;
+    char* dataCasado;
     GList* filhos; //id dos filhos
     GList* eventos;
     char* historia; //char* as historias
