@@ -46,30 +46,34 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
     }
 
     //imprime avos
-    if(p->idMae != NULL)
+    if(p->idMae != NULL){
         Pessoa p1 = g_hash_table_lookup(p->idMae);
         if(p1->idMae != NULL)
             fprintf(f, "#I%d tem-como-MM #aut%d\n", p->id, p1->idMae);
             if(!imprimido(imp, p->idMae))
                 factos_base(g_hash_table_lookup(hash, p1->idMae), f);
-    if(p->idMae != NULL)
+    }
+    if(p->idMae != NULL){
         Pessoa p1 = g_hash_table_lookup(p->idMae);
         if(p1->idMae != NULL)
             fprintf(f, "#I%d tem-como-PM #aut%d\n", p->id, p1->idPai);
             if(!imprimido(imp, p->idMae))
                 factos_base(g_hash_table_lookup(hash, p1->idMae), f);
-    if(p->idPai != NULL)
+    }
+    if(p->idPai != NULL){
         Pessoa p1 = g_hash_table_lookup(p->idPai);
         if(p1->idMae != NULL)
             fprintf(f, "#I%d tem-como-MP #aut%d\n", p->id, p1->idMae);
             if(!imprimido(imp, p1->idMae))
                 factos_base(g_hash_table_lookup(hash, p1->idMae), f);
-    if(p->idPai != NULL)
+    }
+    if(p->idPai != NULL){
         Pessoa p1 = g_hash_table_lookup(p->idPai);
         if(p1->idPai != NULL)
             fprintf(f, "#I%d tem-como-PP #aut%d\n", p->id, p1->idPai);
             if(!imprimido(imp, p1->idPai))
                 factos_base(g_hash_table_lookup(hash, p->idPai), f);
+    }
     
     //imprime casamento
     if(p->idCasado != NULL){
@@ -88,7 +92,7 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
 
     //imprime eventos eventos
     for(GList* elem = p->eventos; elem; elem = elem->next){
-        fprintf(f, "#I%d %s em %s", p->id, elem->descricao, elem->data);
+        fprintf(f, "#I%d %s em %s\n", p->id, elem->descricao, elem->data);
     }
 
     //guarda que ja imprimiu esta pessoa
@@ -102,4 +106,62 @@ int imprimido(GList* list, int id){
         }
     }
     return 0;
+}
+
+void imprime_prolog(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
+
+    if(p->idPai != NULL){
+        fprintf(f, "pai(%d,%d).\n", p->idPai, p->id);
+        fprintf(f, "filho(%d,%d).\n", p->id, p->idPai);
+    }
+
+    if(p->idMae != NULL){
+        fprintf(f, "mae(%d,%d).\n", p->idMae, p->id);
+        fprintf(f, "filho(%d,%d).\n", p->id, p->idMae);
+    }
+
+    //imprime avos
+    if(p->idMae != NULL){
+        Pessoa p1 = g_hash_table_lookup(p->idMae);
+        if(p1->idMae != NULL){
+            fprintf(f, "avo(%d,%d).\n", p1->idMae, p->id);
+            fprintf(f, "neto(%d,%d).\n", p->id, p1->idMae);
+        } 
+    }
+    if(p->idMae != NULL){
+        Pessoa p1 = g_hash_table_lookup(p->idMae);
+        if(p1->idPai != NULL){
+            fprintf(f, "avo(%d,%d).\n", p1->idPai, p->id);
+            fprintf(f, "neto(%d,%d).\n", p->id, p1->idPai);
+        }
+    }
+    if(p->idPai != NULL){
+        Pessoa p1 = g_hash_table_lookup(p->idPai);
+        if(p1->idMae != NULL){
+            fprintf(f, "avo(%d,%d).\n", p1->idMae, p->id);
+            fprintf(f, "neto(%d,%d).\n", p->id, p1->idMae);
+        } 
+    }
+    if(p->idPai != NULL){
+        Pessoa p1 = g_hash_table_lookup(p->idPai);
+        if(p1->idPai != NULL){
+            fprintf(f, "avo(%d,%d).\n", p1->idPai, p->id);
+            fprintf(f, "neto(%d,%d).\n", p->id, p1->idPai);
+        }
+    }
+
+    if(p->idCasado != NULL){
+        fprintf(f, "casado(%d, %d).\n", p->id, p->idCasado);
+    }
+    if(p->filhos != NULL){
+        for(GList* elem = p->filhos; elem; elem = elem->next){
+            fprintf(f, "filho(%d, %d).\n", elem, p->id);
+            fprintf(f, "pai(%d, %d).\n", p->id, elem);
+            if(p->Casado != NULL){
+                fprintf(f, "filho(%d,%d).\n", elem, p->idCasado);
+                fprintf(f, "mae(%d, %d).\n", p->idCasado, elem);
+            }
+        }
+    }
+
 }
