@@ -46,30 +46,34 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
     }
 
     //imprime avos
-    if(p->idMae != NULL)
+    if(p->idMae != NULL){
         Pessoa p1 = g_hash_table_lookup(p->idMae);
         if(p1->idMae != NULL)
             fprintf(f, "#I%d tem-como-MM #aut%d\n", p->id, p1->idMae);
             if(!imprimido(imp, p->idMae))
                 factos_base(g_hash_table_lookup(hash, p1->idMae), f);
-    if(p->idMae != NULL)
+    }
+    if(p->idMae != NULL){
         Pessoa p1 = g_hash_table_lookup(p->idMae);
         if(p1->idMae != NULL)
             fprintf(f, "#I%d tem-como-PM #aut%d\n", p->id, p1->idPai);
             if(!imprimido(imp, p->idMae))
                 factos_base(g_hash_table_lookup(hash, p1->idMae), f);
-    if(p->idPai != NULL)
+    }
+    if(p->idPai != NULL){
         Pessoa p1 = g_hash_table_lookup(p->idPai);
         if(p1->idMae != NULL)
             fprintf(f, "#I%d tem-como-MP #aut%d\n", p->id, p1->idMae);
             if(!imprimido(imp, p1->idMae))
                 factos_base(g_hash_table_lookup(hash, p1->idMae), f);
-    if(p->idPai != NULL)
+    }
+    if(p->idPai != NULL){
         Pessoa p1 = g_hash_table_lookup(p->idPai);
         if(p1->idPai != NULL)
             fprintf(f, "#I%d tem-como-PP #aut%d\n", p->id, p1->idPai);
             if(!imprimido(imp, p1->idPai))
                 factos_base(g_hash_table_lookup(hash, p->idPai), f);
+    }
     
     //imprime casamento
     if(p->idCasado != NULL){
