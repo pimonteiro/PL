@@ -3,11 +3,11 @@
 typedef struct Evento
 {
     char* data; //data do evento
-    char* descricao; //casamento...
-    char* nome; //usado por exemplo no caso de cassamento para dizer com quem ou null se nao tiver ninguem associado
+    char* descricao; 
+    
 }Evento;
 
-Evento create(char* data, char* desc){
+Evento create_evento(char* data, char* desc){
     Evento e = (Evento*) malloc(sizeof(Evento));
     e->data = data;
     e->descricao = desc;

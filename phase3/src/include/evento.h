@@ -4,6 +4,6 @@
 typedef struct Evento *Evento;
 
 
-Evento create(char* data, char* desc);
+Evento create_evento(char* data, char* desc);
 
 #endif

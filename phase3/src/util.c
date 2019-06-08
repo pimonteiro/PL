@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "pessoa.h"
+#include "evento.h"
 
 void factos_base(Pessoa p, FILE* f){
     
@@ -17,6 +18,12 @@ void factos_base(Pessoa p, FILE* f){
 
     if(p->morreu != NULL)
         fprintf(f, "#I%d data-falecimento %c\n", p->id, p->morte);
+    
+    //imprime fotos e historia
+    if(p->foto != NULL)
+        fprintf(f, "#I%d FOTO %c\n", p->id, p->foto);
+    if(p->historia != NULL)
+        fprintf(f, "#I%d HISTORIA %c\n", p->id, p->historia);
 }
 
 //imp e a lista de pessoas que ja foram imprimidas, hash e a lista de todas as pessoas
@@ -39,7 +46,6 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
     }
 
     //imprime avos
-    
     if(p->idMae != NULL)
         Pessoa p1 = g_hash_table_lookup(p->idMae);
         if(p1->idMae != NULL)
@@ -65,12 +71,6 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
             if(!imprimido(imp, p1->idPai))
                 factos_base(g_hash_table_lookup(hash, p->idPai), f);
     
-    //imprime fotos e historia
-    if(p->foto != NULL)
-        fprintf(f, "#I%d FOTO %c\n", p->id, p->foto);
-    if(p->historia != NULL)
-        fprintf(f, "#I%d HISTORIA %c\n", p->id, p->historia);
-
     //imprime casamento
     if(p->idCasado != NULL){
         int num_f = (int) g_list_length(p->filhos);
@@ -86,7 +86,12 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
         }
     }
 
-    //falta imprimir eventos
+    //imprime eventos eventos
+    for(GList* elem = p->eventos; elem; elem = elem->next){
+        fprintf(f, "#I%d %s em %s", p->id, elem->descricao, elem->data);
+    }
+
+    //guarda que ja imprimiu esta pessoa
     g_list_append(imp, p->id);
 }
 
