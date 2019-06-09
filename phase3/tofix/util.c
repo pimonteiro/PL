@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "pessoa.h"
-#include "evento.h"
+#include "include/pessoa.h"
+#include "include/evento.h"
 
 void factos_base(Pessoa p, FILE* f){
-    
+
     if(f == NULL){
         printf("Ficheiro não existe");
         exit(1);
@@ -12,13 +12,13 @@ void factos_base(Pessoa p, FILE* f){
     if(p->apelido == NULL && p->nome != NULL)
         fprintf(f, "#I%d nome %c\n", p->id, p->nome);
     else  fprintf(f, "#I%d nome %c %c\n", p->id, p->nome, p->apelido);
-    
+
     if(p->nasceu != NULL)
         fprintf(f, "#I%d data-nascimento %c\n", p->id, p->nasceu);
 
     if(p->morreu != NULL)
         fprintf(f, "#I%d data-falecimento %c\n", p->id, p->morte);
-    
+
     //imprime fotos e historia
     if(p->foto != NULL)
         fprintf(f, "#I%d FOTO %c\n", p->id, p->foto);
@@ -74,7 +74,7 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
             if(!imprimido(imp, p1->idPai))
                 factos_base(g_hash_table_lookup(hash, p->idPai), f);
     }
-    
+
     //imprime casamento
     if(p->idCasado != NULL){
         int num_f = (int) g_list_length(p->filhos);

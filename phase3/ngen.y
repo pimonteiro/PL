@@ -1,5 +1,9 @@
 %{
+#define _GNU_SOURCE
 #include <stdio.h>
+#include "include/pessoa.h"
+
+Pessoa p;
 %}
 %union {
     int num;
@@ -8,7 +12,9 @@
 
 %token FOTO HIST NASCEU NASCEUAPROX MORREU MORREUAPROX CASAMENTO EVENTO
 %token <num> NUM
-%token <str> STRING
+%token <str> STRING NOME
+
+%type <str> Nomes ID Identificacao
 %%
 
 Ngen : Acao
@@ -16,7 +22,8 @@ Ngen : Acao
      ;
 
 Acao : Parentesco
-     | Nomes ID
+     | Nomes ID         {printf("%d - %s\n",atoi($2), $1);}
+     | Nomes            {printf("%s\n", $1);}
      | Dados_Extra
      | Casamento
      ;
@@ -41,14 +48,12 @@ Filho : 'F' Identificacao Evento '{' Dados_Extra '}'
       | 'F' Identificacao
       ;
 
-Nomes : Nomes1
-      | Nomes1 '/' Nomes1
-      | Nomes '%' NUM
+
+Nomes : NOME                   {$$=$1;}
+      | NOME '/' NOME          {asprintf(&$$,"%s%s",$1,$3);}
+      | NOME '%' NUM           {} /*Might fail here*/
       ;
 
-Nomes1 : STRING
-       | STRING Nomes1
-       ;
 
 Evento : NASCEU NUM
        | NASCEUAPROX NUM
@@ -63,15 +68,15 @@ Evento : NASCEU NUM
 Casamento : CASAMENTO NUM Identificacao
           ;
 
-Identificacao : ID
-              | Nomes
+Identificacao : ID              {$$ = $1;}
+              | Nomes           {asprintf(&$$,"%s", $1);}
               ;
 
 Dados_Extra : FOTO STRING
             | HIST STRING
             ;
 
-ID : '[' NUM ']'
+ID : '[' NUM ']'                {$$ = $2;}
    ;
 %%
 
@@ -81,6 +86,7 @@ int yyerror(char* s){
 }
 
 int main(){
+    p = create(-1);
     yyparse();
     return 0;
 }
