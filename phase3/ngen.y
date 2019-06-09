@@ -1,9 +1,14 @@
 %{
 #include <stdio.h>
 %}
+%union {
+    int num;
+    char* str;
+}
 
-%token FOTO HIST F M P STRING NUM
-
+%token FOTO HIST NASCEU NASCEUAPROX MORREU MORREUAPROX CASAMENTO EVENTO
+%token <num> NUM
+%token <str> STRING
 %%
 
 Ngen : Acao
@@ -11,46 +16,64 @@ Ngen : Acao
      ;
 
 Acao : Parentesco
-     | Nomes
+     | Nomes ID
      | Dados_Extra
+     | Casamento
      ;
 
-Parentesco : P Nomes Evento
-           | M Nomes Evento
+Parentesco : 'P' Identificacao Evento
+           | 'P' Identificacao
+           | 'M' Identificacao Evento
+           | 'M' Identificacao
            | Filho
-           | "-" P Nomes Evento
-           | "-" M Nomes Evento
-           | "-" P Parentesco
-           | "-" M Parentesco
-           | P Parentesco
-           | M Parentesco
+           | '-' 'P' Identificacao Evento
+           | '-' 'P' Identificacao
+           | '-' 'M' Identificacao Evento
+           | '-' 'M' Identificacao
+           | '-' 'P' Parentesco
+           | '-' 'M' Parentesco
+           | 'P' Parentesco
+           | 'M' Parentesco
            ;
 
-Filho : F Nomes Evento
-      | F Nomes Evento "{" Dados_Extra "}"
+Filho : 'F' Identificacao Evento '{' Dados_Extra '}'
+      | 'F' Identificacao Evento
+      | 'F' Identificacao
       ;
 
-Nomes : STRING
-      | STRING "%" NUM
-      | STRING "/" Nomes
-      | STRING " " Nomes
+Nomes : Nomes1
+      | Nomes1 '/' Nomes1
+      | Nomes '%' NUM
       ;
 
-
-Evento : "*" NUM
-       | "+" NUM
-       | "+c" NUM
-       | "cc(" NUM ")" Nomes
-       | "ev(" NUM ":+)"
-       | "ev(" NUM ":*)"
-       | "ev(" NUM ":+c)"  /* Maybe missing cc(DATA) ? */
+Nomes1 : STRING
+       | STRING Nomes1
        ;
+
+Evento : NASCEU NUM
+       | NASCEUAPROX NUM
+       | MORREU NUM
+       | MORREUAPROX NUM
+       | EVENTO NUM ':' MORREU
+       | EVENTO NUM ':' NASCEU
+       | EVENTO NUM ':' MORREUAPROX
+       | EVENTO NUM ':' NASCEUAPROX
+       ;
+
+Casamento : CASAMENTO NUM Identificacao
+          ;
+
+Identificacao : ID
+              | Nomes
+              ;
 
 Dados_Extra : FOTO STRING
             | HIST STRING
             ;
+
+ID : '[' NUM ']'
+   ;
 %%
-#include "lex.yy.c"
 
 int yyerror(char* s){
     printf("Error: %s\n", s);
