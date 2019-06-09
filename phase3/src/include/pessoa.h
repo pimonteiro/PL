@@ -1,6 +1,7 @@
 #ifndef _PESSOA_H_
 #define _PESSOA_H_
 #include <glib.h>
+#include <stdio.h> 
 
 typedef struct pessoa
 {
@@ -19,10 +20,8 @@ typedef struct pessoa
     GList* eventos;
     char* historia; //char* as historias
 
-};
+}*Pessoa;
 
-typedef struct pessoa* Pessoa;
-
-Pessoa create(int id);
+Pessoa create_p(int id);
 
 #endif

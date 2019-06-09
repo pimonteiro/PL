@@ -4,7 +4,7 @@
 #include "include/pessoa.h"
 
 
-Pessoa create(int id){
+Pessoa create_p(int id){
     Pessoa p = (Pessoa) malloc(sizeof(struct pessoa));
     p->id = id;
     return p;

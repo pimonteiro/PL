@@ -1,0 +1,22 @@
+#I1 nome Bruno
+#I1 data-nascimento 123
+#I1 FOTO ola
+#I1 HISTORIA olas
+#I1 tem-como-mae #aut2
+#I2 nome Mae
+#I2 data-nascimento 1235
+#I2 FOTO ola
+#I2 HISTORIA olas
+#I1 tem-como-pai #aut3
+#I3 nome Pai
+#I3 data-nascimento 1234
+#I3 FOTO ola
+#I3 HISTORIA olas
+#F1 = #I1 #9 
+#F1 data-casamento 1999
+#I9 nome CAsado
+#I9 data-nascimento 1235324
+#I6 nome Filho
+#I6 data-nascimento 1235
+#I6 FOTO ola
+#I6 HISTORIA olas

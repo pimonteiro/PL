@@ -1,10 +1,12 @@
 #ifndef _EVENTO_H_
 #define _EVENTO_H_
 
-#include <glib.h>
+typedef struct evento
+{
+    char* data; //data do evento
+    char* descricao;
 
-typedef struct evento* Evento;
-
+}*Evento;
 
 Evento create_evento(char* data, char* desc);
 
