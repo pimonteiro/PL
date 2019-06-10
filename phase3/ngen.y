@@ -404,8 +404,10 @@ int main(){
     GList* lista = g_list_reverse(lst);
     for(GList* l= lista; l; l = l->next){
         Pessoa p = (Pessoa)l->data;
-        list = imprime_pessoa(p, fp, table, list);
-        imprime_prolog(p,fp1, table, list);
+        if(!imprimido(list, p->id)){
+            list = imprime_pessoa(p, fp, table, list);
+            imprime_prolog(p,fp1, table, list);
+        }
     }
     fclose(fp);
     fclose(fp1);

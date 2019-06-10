@@ -71,7 +71,7 @@ GList* imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
         Pessoa p1 = g_hash_table_lookup(hash, &p->idMae);
         if(p1->idPai != -1){
             fprintf(f, "#I%d tem-como-PM #aut%d\n", p->id, p1->idPai);
-            if(!imprimido(imp, p->idPai)){
+            if(!imprimido(imp, p1->idPai)){
                 factos_base(g_hash_table_lookup(hash, &(p1->idPai)), f, imp);
                 imp = g_list_append(imp, GINT_TO_POINTER(p1->idPai));
             }
