@@ -361,15 +361,19 @@ int main(){
 
     GList* list = NULL;
     GList* lst = g_hash_table_get_values(table);
-    FILE* fp = fopen("test.txt", "w+");
+    FILE* fp = fopen("ngen.txt", "w+");
+    FILE* fp1 = fopen("ngen.pl", "w+");
     gint* k = g_new(gint,1); *k = 3;
     Pessoa p1 = g_hash_table_lookup(table, k);
 
-    //imprime_pessoa(p1, fp, table, list);
+    imprime_pessoa(p1, fp, table, list);
     imprime_prolog(p1,fp,table,list);
-    //for(GList* l= lst; l; l = l->next){
-    //    Pessoa p = (Pessoa)l->data;
-    //    imprime_pessoa(p, fp, table, list);
+    for(GList* l= lst; l; l = l->next){
+        Pessoa p = (Pessoa)l->data;
+        imprime_pessoa(p1, fp, table, list);
+        imprime_prolog(p1,fp2, table, list);
+    }
     fclose(fp);
+    fclose(fp2);
     return 0;
 }
