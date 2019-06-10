@@ -36,7 +36,7 @@ void factos_base(Pessoa p, FILE* f, GList* imp){
 GList* imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
 
     if(!imprimido(imp, p->id)){
-        imp = factos_base(p, f, imp);
+        factos_base(p, f, imp);
         imp = g_list_append(imp, GINT_TO_POINTER(p->id));
     }
     //imprime pais
