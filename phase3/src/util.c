@@ -70,7 +70,7 @@ GList* imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
     if(p->idMae != -1){
         Pessoa p1 = g_hash_table_lookup(hash, &p->idMae);
         if(p1->idPai != -1){
-            fprintf(f, "#I%d tem-como-PM #aut%d\n", p->id, p1->idPai);
+            fprintf(f, "#I%d tem-como-MP #aut%d\n", p->id, p1->idPai);
             if(!imprimido(imp, p1->idPai)){
                 factos_base(g_hash_table_lookup(hash, &(p1->idPai)), f, imp);
                 imp = g_list_append(imp, GINT_TO_POINTER(p1->idPai));
@@ -80,7 +80,7 @@ GList* imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
     if(p->idPai != -1){
         Pessoa p1 = g_hash_table_lookup(hash, &p->idPai);
         if(p1->idMae != -1){
-            fprintf(f, "#I%d tem-como-MP #aut%d\n", p->id, p1->idMae);
+            fprintf(f, "#I%d tem-como-PM #aut%d\n", p->id, p1->idMae);
             if(!imprimido(imp, p1->idMae)){
                 factos_base(g_hash_table_lookup(hash, &(p1->idMae)), f, imp);
                 imp = g_list_append(imp, GINT_TO_POINTER(p1->idMae));
@@ -114,7 +114,7 @@ GList* imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
     if(p->filhos != NULL){
         for(GList* l = p->filhos; l != NULL; l = l->next ){
             int i = (int)GPOINTER_TO_INT(l->data);
-            fprintf(f, "#F%d tem-como-filho #aut%d", num_f, i);
+            fprintf(f, "#F%d tem-como-filho #aut%d\n", num_f, i);
             if(!imprimido(imp, (int)GPOINTER_TO_INT(l->data))){
                 factos_base(g_hash_table_lookup(hash, &(l->data)), f, imp);
                 imp = g_list_append(imp, GINT_TO_POINTER(l->data));
