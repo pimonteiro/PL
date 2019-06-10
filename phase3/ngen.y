@@ -137,33 +137,33 @@ Pessoa : Nomes Eventos ID        {Pessoa p = $1;
                                  add_eventos(p,$2);
                                  p->id = $3;
                                  gint* k = g_new(gint,1);
-                                 *k = $1->id;
+                                 *k = p->id;
                                  g_hash_table_insert(table, k, (gpointer)p);
-                                 user = $1->id;
+                                 user = p->id;
                                  id = user + 1;
                                 }
        | Nomes Eventos           {Pessoa p = $1;
                                   add_eventos(p,$2);
                                   id++;
                                   gint* k = g_new(gint,1);
-                                  *k = $1->id;
+                                  *k = p->id;
                                   g_hash_table_insert(table, k, (gpointer)p);
-                                  user = $1->id;
+                                  user = p->id;
                                 }
        | Nomes ID               {Pessoa p = $1;
                                  p->id = $2;
                                  gint* k = g_new(gint,1);
-                                 *k = $1->id;
+                                 *k = p->id;
                                  g_hash_table_insert(table, k, (gpointer)p);
-                                 user = $1->id;
+                                 user = p->id;
                                  id = user + 1;
                                 }
        | Nomes                  {Pessoa p = $1;
                                  id++;
                                  gint* k = g_new(gint,1);
-                                 *k = $1->id;
+                                 *k = p->id;
                                  g_hash_table_insert(table, k, (gpointer)p);
-                                 user = $1->id;
+                                 user = p->id;
                                 }
        ;
 
@@ -186,14 +186,14 @@ Parentesco : 'P' Info               {
                                     }
            | 'P' Parentesco         {
                                     struct parenting pop = $2;
-                                    pop.path[1] = 0;
+                                    pop.path[pop.i] = 0;
                                     pop.i++;
                                     pop.inv = 0;
                                     $$ = pop;
                                     }
            | '-' 'P' Parentesco     {
                                     struct parenting pop = $3;
-                                    pop.path[1] = 0;
+                                    pop.path[pop.i] = 0;
                                     pop.i++;
                                     pop.inv = 1;
                                     $$ = pop;
@@ -216,14 +216,14 @@ Parentesco : 'P' Info               {
                                     }
            | 'M' Parentesco         {
                                     struct parenting pop = $2;
-                                    pop.path[1] = 1;
+                                    pop.path[pop.i] = 1;
                                     pop.i++;
                                     pop.inv = 0;
                                     $$ = pop;
                                     }
           | '-' 'M' Parentesco      {
                                     struct parenting pop = $3;
-                                    pop.path[1] = 1;
+                                    pop.path[pop.i] = 1;
                                     pop.i++;
                                     pop.inv = 1;
                                     $$ = pop;
@@ -276,6 +276,7 @@ Filho : 'F' Identificacao Eventos '{' Dados_Extra '}'    {Pessoa f = $2;
                                     }
                                     }
    | 'F' Identificacao              {Pessoa f = $2;
+
                                     if(f->id == id) id++;
                                     else id = f->id + 1;
 
@@ -337,6 +338,7 @@ Casamento : CASAMENTO NUM Identificacao {   gint* k = g_new(gint,1); *k = user;
                                                 a->dataCasado = $2;
                                                 Pessoa p = $3;
                                                 if(p->id == id) id++;
+                                                else id = p->id + 1;
                                                 a->idCasado = p->id;
                                                 p->idCasado = a->id;
                                                 p->dataCasado = $2;
@@ -391,17 +393,48 @@ void add_eventos(Pessoa p, GList* evs){
     }
 }
 
+guint compare(Pessoa a, Pessoa b){
+    if(a->id > b->id) return 1;
+    if(a->id < b->id) return -1;
+    return 0;
+}
+
 int main(){
     table = g_hash_table_new (g_int_hash, g_int_equal);
 
     yyparse();
+
+    gint* k1 = g_new(gint,1); *k1 = 3;
+    Pessoa p1 = g_hash_table_lookup(table,k1);
+    *k1 = 0;
+    Pessoa p2 = g_hash_table_lookup(table,k1);
+    *k1 = 1;
+    Pessoa p3 = g_hash_table_lookup(table,k1);
+    *k1 = 2;
+    Pessoa p4 = g_hash_table_lookup(table,k1);
+    *k1 = 4;
+    Pessoa p5 = g_hash_table_lookup(table,k1);
+    *k1 = 5;
+    Pessoa p6 = g_hash_table_lookup(table,k1);
+    *k1 = 6;
+    Pessoa p7 = g_hash_table_lookup(table,k1);
+    *k1 = 7;
+    Pessoa p8 = g_hash_table_lookup(table,k1);
+    *k1 = 8;
+    Pessoa p9 = g_hash_table_lookup(table,k1);
+    *k1 = 9;
+    Pessoa p10 = g_hash_table_lookup(table,k1);
+    *k1 = 10;
+    Pessoa p11 = g_hash_table_lookup(table,k1);
+
+
 
     GList* list = NULL;
     GList* lst = g_hash_table_get_values(table);
     FILE* fp = fopen("ngen.txt", "w+");
     FILE* fp1 = fopen("ngen.pl", "w+");
     gint* k = g_new(gint,1); *k = 3;
-    GList* lista = g_list_reverse(lst);
+    GList* lista = g_list_sort(lst, (GCompareFunc)compare);
     for(GList* l= lista; l; l = l->next){
         Pessoa p = (Pessoa)l->data;
         if(!imprimido(list, p->id)){
