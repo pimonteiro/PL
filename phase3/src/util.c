@@ -99,7 +99,7 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
     //imprime filhos
     if(p->filhos != NULL){
         for(GList* l = p->filhos; l != NULL; l = l->next ){
-            int i = (int)GPOINTER_TO_INT(l->data)
+            int i = (int)GPOINTER_TO_INT(l->data);
             fprintf(f, "#F%d tem-como-filho #aut%d", num_f, i);
             if(!imprimido(imp, (int)GPOINTER_TO_INT(l->data)))
                 factos_base(g_hash_table_lookup(hash, &l->data), f, imp);
@@ -116,7 +116,6 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
 }
 
 int imprimido(GList* list, int id){
-    int i = 0;
     for(GList* l=list; l; l = l->next){
         if(GPOINTER_TO_INT(l->data) == id) return 1;
     }
