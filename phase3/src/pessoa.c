@@ -9,6 +9,9 @@ Pessoa create(int id){
     p->id = id;
     p->flagMorteAprox = 0;
     p->flagNasceAprox = 0;
+    p->idCasado = -1;
+    p->idPai = -1;
+    p->idMae = -1;
     return p;
 }
 
