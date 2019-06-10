@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "include/pessoa.h"
 #include "include/evento.h"
+#include "include/util.h"
 
 void factos_base(Pessoa p, FILE* f){
 
@@ -12,9 +13,9 @@ void factos_base(Pessoa p, FILE* f){
     if(p->nome != NULL)
         fprintf(f, "#I%d nome %s\n", p->id, p->nome);
 
-    if(p->nasceu != 0 && p->flagNascAprox <= 0)
+    if(p->nasceu != 0 && p->flagNasceAprox <= 0)
         fprintf(f, "#I%d data-nascimento %d\n", p->id, p->nasceu);
-    if(p->nasceu <=0 && p->flagNascAprox > 0)
+    if(p->nasceu <=0 && p->flagNasceAprox > 0)
         fprintf(f, "#I%d data-nascimento-aproximada %d\n", p->id, p->nasceu);
     if(p->morte != 0 && p->flagMorteAprox <= 0)
         fprintf(f, "#I%d data-falecimento %d\n", p->id, p->morte);
