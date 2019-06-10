@@ -29,7 +29,7 @@ void factos_base(Pessoa p, FILE* f, GList* imp){
             fprintf(f, "#I%d FOTO %s\n", p->id, p->foto);
         if(p->historia != NULL)
             fprintf(f, "#I%d HISTORIA %s\n", p->id, p->historia);
-    g_list_append(imp, GINT_TO_POINTER(p->id));
+        imp = g_list_append(imp, GINT_TO_POINTER(p->id));
     }
 }
 
