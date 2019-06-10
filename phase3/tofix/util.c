@@ -12,11 +12,14 @@ void factos_base(Pessoa p, FILE* f){
     if(p->nome != NULL)
         fprintf(f, "#I%d nome %s\n", p->id, p->nome);
 
-    if(p->nasceu != 0)
+    if(p->nasceu != 0 && p->flagNascAprox <= 0)
         fprintf(f, "#I%d data-nascimento %d\n", p->id, p->nasceu);
-
-    if(p->morte != 0)
+    if(p->nasceu <=0 && p->flagNascAprox > 0)
+        fprintf(f, "#I%d data-nascimento-aproximada %d\n", p->id, p->nasceu);
+    if(p->morte != 0 && p->flagMorteAprox <= 0)
         fprintf(f, "#I%d data-falecimento %d\n", p->id, p->morte);
+    if(p->morte <= 0 && p->flagMorteAprox > 0)
+        fprintf(f, "#I%d data-falecimento-aproximada %d\n", p->id, p->morte);
 
     //imprime fotos e historia
     if(p->foto != NULL)
