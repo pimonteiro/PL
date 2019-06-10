@@ -2,6 +2,7 @@
 #define _PESSOA_H_
 #include <glib.h>
 
+
 struct pessoa
 {
     int id;
@@ -18,7 +19,8 @@ struct pessoa
     GList* filhos; //id dos filhos
     GList* eventos;
     char* historia; //char* as historias
-
+    int flagMorteAprox;
+    int flagNasceAprox;
 };
 
 typedef struct pessoa* Pessoa;

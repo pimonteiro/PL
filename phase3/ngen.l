@@ -16,10 +16,8 @@
 (CC)            { return CASAMENTO; }
 (EV)            { return EVENTO; }
 (F|M|P)         { return yytext[0]; }
-[A-Z][-A-Za-z ]* { yylval.str=strdup(yytext);return NOME;}
+[a-zA-Z]+(\.[a-zA-Z]+)? {printf("LiN:%s\n",yytext); yylval.str=strdup(yytext);return STRING;}
 
-[\[\]:{}/%-]                  { return yytext[0]; }
+[\[\]:{}/%\n-]                 { printf("%c\n",yytext[0]);return yytext[0]; }
 [0-9]+                        { yylval.num = atoi(yytext); return NUM; }
-[a-zA-Z]+(\.[a-zA-Z]+)?       { yylval.str = strdup(yytext); return STRING; }
-(\n)                        {}
 %%

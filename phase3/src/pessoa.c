@@ -7,6 +7,8 @@
 Pessoa create(int id){
     Pessoa p = (Pessoa) malloc(sizeof(struct pessoa));
     p->id = id;
+    p->flagMorteAprox = 0;
+    p->flagNasceAprox = 0;
     return p;
 }
 
