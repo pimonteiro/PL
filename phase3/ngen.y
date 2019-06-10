@@ -52,9 +52,13 @@ int flagExtra = 0; //0 -> historia | 1 -> foto
 %type <rela> Parentesco
 %%
 
-Ngen : Pessoa
-     | Pessoa '\n' Acoes
-     ;
+Ngen : Facto
+     | Ngen Facto
+
+
+Facto : Pessoa '\n'
+      | Pessoa '\n' Acoes
+      ;
 
 Acoes : Acao '\n'
       | Acoes Acao '\n'
@@ -136,6 +140,7 @@ Pessoa : Nomes Eventos ID        {Pessoa p = $1;
                                  *k = $1->id;
                                  g_hash_table_insert(table, k, (gpointer)p);
                                  user = $1->id;
+                                 id = user + 1;
                                 }
        | Nomes Eventos           {Pessoa p = $1;
                                   add_eventos(p,$2);
@@ -151,6 +156,7 @@ Pessoa : Nomes Eventos ID        {Pessoa p = $1;
                                  *k = $1->id;
                                  g_hash_table_insert(table, k, (gpointer)p);
                                  user = $1->id;
+                                 id = user + 1;
                                 }
        | Nomes                  {Pessoa p = $1;
                                  id++;
@@ -185,6 +191,13 @@ Parentesco : 'P' Info               {
                                     pop.inv = 0;
                                     $$ = pop;
                                     }
+           | '-' 'P' Parentesco     {
+                                    struct parenting pop = $3;
+                                    pop.path[1] = 0;
+                                    pop.i++;
+                                    pop.inv = 1;
+                                    $$ = pop;
+                                    }
            | 'M' Info               {
                                     struct parenting pop;
                                     pop.pessoa = $2;
@@ -208,12 +221,23 @@ Parentesco : 'P' Info               {
                                     pop.inv = 0;
                                     $$ = pop;
                                     }
+          | '-' 'M' Parentesco      {
+                                    struct parenting pop = $3;
+                                    pop.path[1] = 1;
+                                    pop.i++;
+                                    pop.inv = 1;
+                                    $$ = pop;
+                                    }
            | Filho                  {struct parenting pop;pop.pessoa = NULL; $$ = pop;}
            ;
 
 
 Filho : 'F' Identificacao Eventos '{' Dados_Extra '}'    {Pessoa f = $2;
                                                          add_eventos(f,$3);
+
+                                                         if(f->id == id) id++;
+                                                         else id = f->id + 1;
+
                                                          if(flagExtra == 0)
                                                             f->historia = $5;
                                                          else
@@ -234,6 +258,9 @@ Filho : 'F' Identificacao Eventos '{' Dados_Extra '}'    {Pessoa f = $2;
                                                          }
    | 'F' Identificacao Eventos       {Pessoa f = $2;
                                     add_eventos(f,$3);
+                                    if(f->id == id) id++;
+                                    else id = f->id + 1;
+
                                     gint* k = g_new(gint,1); *k = user;
                                     Pessoa a = g_hash_table_lookup(table, k);
                                     f->idPai = a->id;
@@ -249,6 +276,9 @@ Filho : 'F' Identificacao Eventos '{' Dados_Extra '}'    {Pessoa f = $2;
                                     }
                                     }
    | 'F' Identificacao              {Pessoa f = $2;
+                                    if(f->id == id) id++;
+                                    else id = f->id + 1;
+
                                     gint* k = g_new(gint,1); *k = user;
                                     Pessoa a = g_hash_table_lookup(table, k);
                                     f->idPai = a->id;
@@ -267,11 +297,13 @@ Filho : 'F' Identificacao Eventos '{' Dados_Extra '}'    {Pessoa f = $2;
 
 Info : Identificacao Eventos        {Pessoa p = $1;
                                     if(p->id == id) id++;
+                                    else id = p->id + 1;
                                     add_eventos(p,$2);
                                     $$ = p;
                                     }
      | Identificacao                {Pessoa p = $1;
                                     if(p->id == id) id++;
+                                    else id = p->id + 1;
                                     $$ = p;
                                     }
      ;
@@ -365,8 +397,8 @@ int main(){
     gint* k = g_new(gint,1); *k = 3;
     Pessoa p1 = g_hash_table_lookup(table, k);
 
-    //imprime_pessoa(p1, fp, table, list);
-    imprime_prolog(p1,fp,table,list);
+    imprime_pessoa(p1, fp, table, list);
+    //imprime_prolog(p1,fp,table,list);
     //for(GList* l= lst; l; l = l->next){
     //    Pessoa p = (Pessoa)l->data;
     //    imprime_pessoa(p, fp, table, list);
