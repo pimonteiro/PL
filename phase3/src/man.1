@@ -1,0 +1,32 @@
+.Dd 10/06/2019               
+.Dt NGEN     
+.Os NGEN
+.Sh NAME                 
+.Nm ngen - Language to define geneological data
+.Sh SYNOPSIS             
+.Nm ngen
+<           
+input                          
+.Sh DESCRIPTION          
+.Nm
+is a language for defining genealogical data. This notation alows you to create simple geneological facts regarding events, parenthood relations, stories and photos about an individual. 
+.Pp
+This tool alows you to create .txt files with data and Prolog facts you can test in a interpretor to verifiy the truthness of a relation.
+.Pp
+By default the tool creates an output file named
+.Ar default.txt
+.          
+.Pp          
+.Sh EXAMPLES
+.Bl -item -width -indent                
+.It 
+.Nm ngen input 
+- Generates .txt file and .pl file in the same directory.
+.Pp
+.El
+.Sh SEE ALSO 
+.Xr FLEX 1 , 
+.Xr YACC 1 ,
+.Xr GCC 1,
+.Xr MAN 1,
+.Xr PROLOG 1
