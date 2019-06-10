@@ -4,6 +4,7 @@
 #include <glib.h>
 #include "include/pessoa.h"
 #include "include/evento.h"
+#include "include/util.h"
 
 GHashTable* table;
 
@@ -24,8 +25,9 @@ int flagExtra = 0; //0 -> historia | 1 -> foto
 
     struct parenting{
         Pessoa pessoa;
-        int path[4];
+        int path[4];            //Max 4 generations
         int i;
+        int inv;
     }parenting;
 }
 
@@ -79,16 +81,30 @@ Acao : Parentesco               {
                                     Pessoa p = pop.pessoa;
                                     gint* k2 = g_new(gint,1);
                                     if(path == 0){
-                                        a->idPai = p->id;
-                                        p->filhos = g_list_append(p->filhos, GINT_TO_POINTER(a->id));
-                                        *k2 = p->id;
-                                        g_hash_table_insert(table, (gpointer)k2, (gpointer)p);
+                                        if(pop.inv == 0){
+                                            a->idPai = p->id;
+                                            p->filhos = g_list_append(p->filhos, GINT_TO_POINTER(a->id));
+                                            *k2 = p->id;
+                                            g_hash_table_insert(table, (gpointer)k2, (gpointer)p);
+                                        } else {
+                                            p->idPai = a->id;
+                                            a->filhos = g_list_append(a->filhos, GINT_TO_POINTER(p->id));
+                                            *k2 = p->id;
+                                            g_hash_table_insert(table, (gpointer)k2, (gpointer)p);
+                                        }
                                     }
                                     else{
+                                        if(pop.inv == 0){
                                         a->idMae = p->id;
                                         p->filhos = g_list_append(p->filhos, GINT_TO_POINTER(a->id));
                                         *k2 = p->id;
                                         g_hash_table_insert(table, (gpointer)k2, (gpointer)p);
+                                        } else {
+                                            p->idMae = a->id;
+                                            a->filhos = g_list_append(a->filhos, GINT_TO_POINTER(p->id));
+                                            *k2 = p->id;
+                                            g_hash_table_insert(table, (gpointer)k2, (gpointer)p);
+                                        }
                                     }
                                 }
                                 }
@@ -151,12 +167,22 @@ Parentesco : 'P' Info               {
                                     pop.pessoa = $2;
                                     pop.path[0] = 0;
                                     pop.i = 1;
+                                    pop.inv = 0;
+                                    $$ = pop;
+                                    }
+           | '-' 'P' Info           {
+                                    struct parenting pop;
+                                    pop.pessoa = $3;
+                                    pop.path[0] = 0;
+                                    pop.i = 1;
+                                    pop.inv = 1;
                                     $$ = pop;
                                     }
            | 'P' Parentesco         {
                                     struct parenting pop = $2;
                                     pop.path[1] = 0;
                                     pop.i++;
+                                    pop.inv = 0;
                                     $$ = pop;
                                     }
            | 'M' Info               {
@@ -164,12 +190,22 @@ Parentesco : 'P' Info               {
                                     pop.pessoa = $2;
                                     pop.path[0] = 1;
                                     pop.i = 1;
+                                    pop.inv = 0;
+                                    $$ = pop;
+                                    }
+           | '-' 'M' Info           {
+                                    struct parenting pop;
+                                    pop.pessoa = $3;
+                                    pop.path[0] = 1;
+                                    pop.i = 1;
+                                    pop.inv = 1;
                                     $$ = pop;
                                     }
            | 'M' Parentesco         {
                                     struct parenting pop = $2;
                                     pop.path[1] = 1;
                                     pop.i++;
+                                    pop.inv = 0;
                                     $$ = pop;
                                     }
            | Filho                  {struct parenting pop;pop.pessoa = NULL; $$ = pop;}
@@ -184,12 +220,14 @@ Filho : 'F' Identificacao Eventos '{' Dados_Extra '}'    {Pessoa f = $2;
                                                             f->foto = $5;
                                                          gint* k = g_new(gint,1); *k = user;
                                                          Pessoa a = g_hash_table_lookup(table, k);
+                                                         f->idPai = a->id;
 
                                                          a->filhos = g_list_append(a->filhos,GINT_TO_POINTER(f->id));
                                                          gint* k2 = g_new(gint,1); *k2 = f->id;
                                                          g_hash_table_insert(table,k2,(gpointer)f);
                                                          if(a->idCasado != -1){
                                                              *k = a->idCasado;
+                                                             f->idMae = a->idCasado;
                                                              Pessoa p = g_hash_table_lookup(table, k);
                                                              p->filhos = g_list_append(p->filhos, GINT_TO_POINTER(f->id));
                                                          }
@@ -198,12 +236,14 @@ Filho : 'F' Identificacao Eventos '{' Dados_Extra '}'    {Pessoa f = $2;
                                     add_eventos(f,$3);
                                     gint* k = g_new(gint,1); *k = user;
                                     Pessoa a = g_hash_table_lookup(table, k);
+                                    f->idPai = a->id;
 
                                     a->filhos = g_list_append(a->filhos,GINT_TO_POINTER(f->id));
                                     gint* k2 = g_new(gint,1); *k2 = f->id;
                                     g_hash_table_insert(table,k2,(gpointer)f);
                                     if(a->idCasado != -1){
                                         *k = a->idCasado;
+                                        f->idMae = a->idCasado;
                                         Pessoa p = g_hash_table_lookup(table, k);
                                         p->filhos = g_list_append(p->filhos, GINT_TO_POINTER(f->id));
                                     }
@@ -211,12 +251,14 @@ Filho : 'F' Identificacao Eventos '{' Dados_Extra '}'    {Pessoa f = $2;
    | 'F' Identificacao              {Pessoa f = $2;
                                     gint* k = g_new(gint,1); *k = user;
                                     Pessoa a = g_hash_table_lookup(table, k);
+                                    f->idPai = a->id;
 
                                     a->filhos = g_list_append(a->filhos,GINT_TO_POINTER(f->id));
                                     gint* k2 = g_new(gint,1); *k2 = f->id;
                                     g_hash_table_insert(table,k2,(gpointer)f);
                                     if(a->idCasado != -1){
                                         *k = a->idCasado;
+                                        f->idMae = a->idCasado;
                                         Pessoa p = g_hash_table_lookup(table, k);
                                         p->filhos = g_list_append(p->filhos, GINT_TO_POINTER(f->id));
                                     }
@@ -242,7 +284,7 @@ Eventos : Evento                {GList* evs = NULL; evs = g_list_append(evs,(gpo
 Nomes : STRING                   {Pessoa a = create(id); a->nome = $1; $$ = a;}
       | STRING STRING            {Pessoa a = create(id); a->nome = $1; a->apelido = $2; $$ = a;}
       | STRING '/' STRING        {Pessoa a = create(id); a->nome = $1; a->apelido = $3; $$ = a;}
-      | STRING '%' NUM           {Pessoa a = create(id); a->nome = $1; a->repetido = $3; $$ = a;} /*Might fail here*/
+      | STRING '%' NUM           {Pessoa a = create(id); a->nome = $1; a->repetido = $3; $$ = a;}
       ;
 
 
@@ -317,17 +359,17 @@ int main(){
 
     yyparse();
 
+    GList* list = NULL;
+    GList* lst = g_hash_table_get_values(table);
+    FILE* fp = fopen("test.txt", "w+");
     gint* k = g_new(gint,1); *k = 3;
     Pessoa p1 = g_hash_table_lookup(table, k);
-    *k = 0;
-    Pessoa p2 = g_hash_table_lookup(table, k);
-    *k = 1;
-    Pessoa p3 = g_hash_table_lookup(table, k);
-    *k = 2;
-    Pessoa p4 = g_hash_table_lookup(table, k);
-    *k = 4;
-    Pessoa p5 = g_hash_table_lookup(table, k);
-    *k = 5;
-    Pessoa p6 = g_hash_table_lookup(table, k);
+
+    //imprime_pessoa(p1, fp, table, list);
+    imprime_prolog(p1,fp,table,list);
+    //for(GList* l= lst; l; l = l->next){
+    //    Pessoa p = (Pessoa)l->data;
+    //    imprime_pessoa(p, fp, table, list);
+    fclose(fp);
     return 0;
 }

@@ -34,14 +34,14 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
 
     factos_base(p, f);
     //imprime pais
-    if(p->idMae != 0){
+    if(p->idMae != -1){
         fprintf(f, "#I%d tem-como-mae #aut%d\n", p->id, p->idMae);
         if(!imprimido(imp, p->idMae)){
             Pessoa mae = (Pessoa)g_hash_table_lookup(hash, &(p->idMae));
             factos_base(mae, f);
         }
     }
-    if(p->idPai != 0){
+    if(p->idPai != -1){
         fprintf(f, "#I%d tem-como-pai #aut%d\n", p->id, p->idPai);
         if(!imprimido(imp, p->idPai)){
             Pessoa pai = (Pessoa)g_hash_table_lookup(hash, &(p->idPai));
@@ -49,33 +49,33 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
         }
     }
     //imprime avos
-    if(p->idMae != 0){
+    if(p->idMae != -1){
         Pessoa p1 = g_hash_table_lookup(hash, &p->idMae);
-        if(p1->idMae != 0){
+        if(p1->idMae != -1){
             fprintf(f, "#I%d tem-como-MM #aut%d\n", p->id, p1->idMae);
             if(!imprimido(imp, p->idMae))
                 factos_base(g_hash_table_lookup(hash, &p1->idMae), f);
         }
     }
-    if(p->idMae != 0){
+    if(p->idMae != -1){
         Pessoa p1 = g_hash_table_lookup(hash, &p->idMae);
-        if(p1->idMae != 0){
+        if(p1->idMae != -1){
             fprintf(f, "#I%d tem-como-PM #aut%d\n", p->id, p1->idPai);
             if(!imprimido(imp, p->idMae))
                 factos_base(g_hash_table_lookup(hash, &p1->idMae), f);
         }
     }
-    if(p->idPai != 0){
+    if(p->idPai != -1){
         Pessoa p1 = g_hash_table_lookup(hash, &p->idPai);
-        if(p1->idMae != 0){
+        if(p1->idMae != -1){
             fprintf(f, "#I%d tem-como-MP #aut%d\n", p->id, p1->idMae);
             if(!imprimido(imp, p1->idMae))
                 factos_base(g_hash_table_lookup(hash, &p1->idMae), f);
         }
     }
-    if(p->idPai != 0){
+    if(p->idPai != -1){
         Pessoa p1 = g_hash_table_lookup(hash, &p->idPai);
-        if(p1->idPai != 0){
+        if(p1->idPai != -1){
             fprintf(f, "#I%d tem-como-PP #aut%d\n", p->id, p1->idPai);
             if(!imprimido(imp, p1->idPai))
                 factos_base(g_hash_table_lookup(hash, &p->idPai), f);
@@ -83,8 +83,9 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
     }
 
     //imprime casamento
-    if(p->idCasado != 0){
-        int num_f = (int) g_list_length(p->filhos);
+    int num_f = 0;
+    if(p->idCasado != -1){
+        num_f = (int) g_list_length(p->filhos);
         fprintf(f, "#F%d = #I%d #I%d \n", num_f, p->id, p->idCasado);
         fprintf(f, "#F%d data-casamento %d\n", num_f, p->dataCasado);
         factos_base(g_hash_table_lookup(hash, &p->idCasado), f);
@@ -93,6 +94,8 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
     //imprime filhos
     if(p->filhos != NULL){
         for(GList* l = p->filhos; l != NULL; l = l->next ){
+            int i = (int)l->data;
+            fprintf(f, "#F%d tem-como-filho #aut%d", num_f, i);
             factos_base(g_hash_table_lookup(hash, &l->data), f);
         }
     }
@@ -100,7 +103,8 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
     //imprime eventos eventos
     if(p->eventos != NULL){
         for(GList* l = p->eventos; l != NULL; l = l->next){
-             fprintf(f, "#I%d %s em %d", p->id, l->data->descricao, l->data->data);
+            Evento e = (Evento)l->data;
+            fprintf(f, "#I%d %s em %d\n", p->id, e->descricao, e->data);
         }
     }
 
@@ -114,4 +118,70 @@ int imprimido(GList* list, int id){
         if(l == id) return 1;
     }
     return 0;
+}
+
+void imprime_prolog(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
+
+    if(p->idPai != -1){
+        Pessoa pai = (Pessoa) g_hash_table_lookup(hash, &p->idPai);
+        fprintf(f, "pai(%s,%s).\n", pai->nome, p->nome);
+        fprintf(f, "filho(%s,%s).\n", p->nome, pai->nome);
+    }
+
+    if(p->idMae != -1){
+        Pessoa mae = (Pessoa) g_hash_table_lookup(hash, &p->idMae);
+        fprintf(f, "mae(%s,%s).\n", mae->nome, p->nome);
+        fprintf(f, "filho(%s,%s).\n", p->nome, mae->nome);
+    }
+
+    //imprime avos
+    if(p->idMae != -1){
+        Pessoa p1 = (Pessoa)g_hash_table_lookup(hash, &p->idMae);
+        if(p1->idMae != -1){
+            Pessoa avo = (Pessoa)g_hash_table_lookup(hash, &p1->idMae);
+            fprintf(f, "avo(%s,%s).\n", avo->nome, p->nome);
+            fprintf(f, "neto(%s,%s).\n", p->nome, avo->nome);
+        }
+    }
+    if(p->idMae != -1){
+        Pessoa p1 = g_hash_table_lookup(hash, &p->idMae);
+        if(p1->idPai != -1){
+            Pessoa avo = (Pessoa)g_hash_table_lookup(hash, &p1->idPai);
+            fprintf(f, "avo(%s,%s).\n", avo->nome, p->nome);
+            fprintf(f, "neto(%s,%s).\n", p->nome, avo->nome);
+        }
+    }
+    if(p->idPai != -1){
+        Pessoa p1 = g_hash_table_lookup(hash, &p->idPai);
+        if(p1->idMae != -1){
+            Pessoa avo = (Pessoa)g_hash_table_lookup(hash, &p1->idMae);
+            fprintf(f, "avo(%s,%s).\n", avo->nome, p->nome);
+            fprintf(f, "neto(%s,%s).\n", p->nome, avo->nome);
+        }
+    }
+    if(p->idPai != -1){
+        Pessoa p1 = g_hash_table_lookup(hash, &p->idPai);
+        if(p1->idPai != -1){
+            Pessoa avo = (Pessoa)g_hash_table_lookup(hash, &p1->idPai);
+            fprintf(f, "avo(%s,%s).\n", avo->nome, p->nome);
+            fprintf(f, "neto(%s,%s).\n", p->nome, avo->nome);
+        }
+    }
+
+    if(p->idCasado != -1){
+        Pessoa p1 = g_hash_table_lookup(hash, &p->idCasado);
+        fprintf(f, "casado(%s, %s).\n", p->nome, p1->nome);
+    }
+    if(p->filhos != NULL){
+        for(GList* elem = p->filhos; elem; elem = elem->next){
+            Pessoa filho = g_hash_table_lookup(hash, &elem->data);
+            fprintf(f, "filho(%s, %s).\n", filho->nome, p->nome);
+            fprintf(f, "pai(%s, %s).\n", p->nome, filho->nome);
+            if(p->idCasado != -1){
+                Pessoa p1 = g_hash_table_lookup(hash, &p->idCasado);
+                fprintf(f, "filho(%s,%s).\n",filho->nome , p1->nome);
+                fprintf(f, "mae(%s, %s).\n", p1->nome, filho->nome);
+            }
+        }
+    }
 }
