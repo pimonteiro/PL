@@ -10,7 +10,7 @@ void factos_base(Pessoa p, FILE* f, GList* imp){
         printf("Ficheiro não existe");
         exit(1);
     }
-    if(!imprimido(p->id, imp)){
+    if(!imprimido(imp, p->id)){
         if(p->nome != NULL && p->apelido != NULL)
             fprintf(f, "#I%d nome %s %s\n", p->id, p->nome, p->apelido);
         else  if(p->nome != NULL) fprintf(f, "#I%d nome %s\n", p->id, p->nome);
@@ -99,7 +99,7 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
     //imprime filhos
     if(p->filhos != NULL){
         for(GList* l = p->filhos; l != NULL; l = l->next ){
-            int i = (int)l->data;
+            int i = (int)GPOINTER_TO_INT(l->data)
             fprintf(f, "#F%d tem-como-filho #aut%d", num_f, i);
             if(!imprimido(imp, (int)GPOINTER_TO_INT(l->data)))
                 factos_base(g_hash_table_lookup(hash, &l->data), f, imp);
@@ -117,8 +117,8 @@ void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
 
 int imprimido(GList* list, int id){
     int i = 0;
-    for(int l = (int)g_list_nth_data(list, i) ; l; l = (int)g_list_nth_data(list, i) ){
-        if(l == id) return 1;
+    for(GList* l=list; l; l = l->next){
+        if(GPOINTER_TO_INT(l->data) == id) return 1;
     }
     return 0;
 }
