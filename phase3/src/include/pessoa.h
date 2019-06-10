@@ -2,7 +2,7 @@
 #define _PESSOA_H_
 #include <glib.h>
 
-typedef struct pessoa
+struct pessoa
 {
     int id;
     int repetido;
@@ -24,5 +24,5 @@ typedef struct pessoa
 typedef struct pessoa* Pessoa;
 
 Pessoa create(int id);
-
+void copy_pessoa(Pessoa tmp, Pessoa p);
 #endif

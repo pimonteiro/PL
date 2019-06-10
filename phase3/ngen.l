@@ -20,6 +20,6 @@
 
 [\[\]:{}/%-]                  { return yytext[0]; }
 [0-9]+                        { yylval.num = atoi(yytext); return NUM; }
-[a-zA-Z]+(\.[a-zA-Z]+)?       { yylval.str = strdip(yytext); return STRING; }
-(.|\n)                        {}
+[a-zA-Z]+(\.[a-zA-Z]+)?       { yylval.str = strdup(yytext); return STRING; }
+(\n)                        {}
 %%

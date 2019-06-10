@@ -11,7 +11,7 @@ detected_OS := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 BIN_NAME    = prog
 CC          = gcc
 LD          = gcc `pkg-config --libs glib-2.0`
-CFLAGS      = -std=gnu99 -Wall -Wextra -Wno-unused-parameter -pedantic -g -O0 `pkg-config --cflags glib-2.0`
+CFLAGS      = -Wall -Wextra -Wno-unused-parameter -pedantic -g -O0 `pkg-config --cflags glib-2.0`
 DEBUG		= 1
 
 
