@@ -69,17 +69,19 @@ Acao : Parentesco               {
                                 if(pop.pessoa != NULL){
                                     gint* k = g_new(gint,1); *k = user;
                                     Pessoa a = g_hash_table_lookup(table,k);
-                                    int path = pop.path[0];
-                                    for(int i = 1; i < pop.i; i++){
+                                    int path = pop.path[pop.i - 1];
+                                    for(int i = pop.i - 2; i >= 0; i--){
                                         if(pop.path[i] == 0){
-                                            path = 0;
-                                            *k = a->idPai;
+                                            if(path) *k = a->idMae;
+                                            else *k = a->idPai;
                                             a = g_hash_table_lookup(table,k);
+                                            path = 0;
                                         }
                                         else{
-                                            path = 1;
-                                            *k = a->idMae;
+                                            if(path) *k = a->idMae;
+                                            else *k = a->idPai;
                                             a = g_hash_table_lookup(table,k);
+                                            path = 1;
                                         }
                                     }
                                     Pessoa p = pop.pessoa;
@@ -99,10 +101,10 @@ Acao : Parentesco               {
                                     }
                                     else{
                                         if(pop.inv == 0){
-                                        a->idMae = p->id;
-                                        p->filhos = g_list_append(p->filhos, GINT_TO_POINTER(a->id));
-                                        *k2 = p->id;
-                                        g_hash_table_insert(table, (gpointer)k2, (gpointer)p);
+                                            a->idMae = p->id;
+                                            p->filhos = g_list_append(p->filhos, GINT_TO_POINTER(a->id));
+                                            *k2 = p->id;
+                                            g_hash_table_insert(table, (gpointer)k2, (gpointer)p);
                                         } else {
                                             p->idMae = a->id;
                                             a->filhos = g_list_append(a->filhos, GINT_TO_POINTER(p->id));
@@ -111,6 +113,7 @@ Acao : Parentesco               {
                                         }
                                     }
                                 }
+                                else printf("Nulla\n");
                                 }
      | Dados_Extra              {gint* k = g_new(gint,1); *k = user;
                                  Pessoa a = g_hash_table_lookup(table, k);
