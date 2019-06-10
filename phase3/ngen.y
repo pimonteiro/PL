@@ -113,7 +113,6 @@ Acao : Parentesco               {
                                         }
                                     }
                                 }
-                                else printf("Nulla\n");
                                 }
      | Dados_Extra              {gint* k = g_new(gint,1); *k = user;
                                  Pessoa a = g_hash_table_lookup(table, k);
