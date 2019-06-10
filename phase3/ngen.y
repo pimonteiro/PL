@@ -44,7 +44,7 @@ int flagExtra = 0; //0 -> historia | 1 -> foto
 %token <num> NUM
 %token <str> STRING
 
-%type <str> Dados_Extra
+%type <str> Dados_Extra Texto
 %type <num> ID
 %type <p> Pessoa Nomes Identificacao Info
 %type <list> Eventos
@@ -313,18 +313,19 @@ Eventos : Evento                {GList* evs = NULL; evs = g_list_append(evs,(gpo
         ;
 
 
-Nomes : STRING                   {Pessoa a = create(id); a->nome = $1; $$ = a;}
-      | STRING STRING            {Pessoa a = create(id); a->nome = $1; a->apelido = $2; $$ = a;}
-      | STRING '/' STRING        {Pessoa a = create(id); a->nome = $1; a->apelido = $3; $$ = a;}
-      | STRING '%' NUM           {Pessoa a = create(id); a->nome = $1; a->repetido = $3; $$ = a;}
+Nomes : Texto                   {Pessoa a = create(id); a->nome = $1; $$ = a;}
+      | Texto '/' STRING        {Pessoa a = create(id); a->nome = $1; a->apelido = $3; $$ = a;}
+      | Texto '%' NUM           {Pessoa a = create(id); a->nome = $1; a->repetido = $3; $$ = a;}
       ;
 
+Texto : STRING                   {$$ = $1;}
+     | Texto STRING              {asprintf(&$$,"%s %s",$1,$2);}
 
 Evento : NASCEU NUM                     {$$ = create_evento($2,N);}
        | NASCEUAPROX NUM                {$$ = create_evento($2,NA);}
        | MORREU NUM                     {$$ = create_evento($2,M);}
        | MORREUAPROX NUM                {$$ = create_evento($2,MA);}
-       | EVENTO NUM ':' STRING          {$$ = create_evento($2,$4);}
+       | EVENTO NUM ':' Texto          {$$ = create_evento($2,$4);}
        ;
 
 Casamento : CASAMENTO NUM Identificacao {   gint* k = g_new(gint,1); *k = user;
@@ -345,7 +346,11 @@ Casamento : CASAMENTO NUM Identificacao {   gint* k = g_new(gint,1); *k = user;
                                         }
           ;
 
-Identificacao : ID                { $$ = create($1); }
+Identificacao : ID                { gint* k = g_new(gint,1); *k = $1;
+                                    Pessoa p = g_hash_table_lookup(table,k);
+                                    if(p == NULL) $$ = create($1);
+                                    else $$ = p;
+                                  }
               | Nomes ID          { Pessoa p = $1; p->id = $2; $$ = p;}
               | Nomes             { $$ = $1; }
               ;
@@ -399,7 +404,7 @@ int main(){
     GList* lista = g_list_reverse(lst);
     for(GList* l= lista; l; l = l->next){
         Pessoa p = (Pessoa)l->data;
-        imprime_pessoa(p, fp, table, list);
+        list = imprime_pessoa(p, fp, table, list);
         imprime_prolog(p,fp1, table, list);
     }
     fclose(fp);
