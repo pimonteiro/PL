@@ -396,8 +396,8 @@ int main(){
     FILE* fp = fopen("ngen.txt", "w+");
     FILE* fp1 = fopen("ngen.pl", "w+");
     gint* k = g_new(gint,1); *k = 3;
-
-    for(GList* l= lst; l; l = l->next){
+    GList* lista = g_list_reverse(lst);
+    for(GList* l= lista; l; l = l->next){
         Pessoa p = (Pessoa)l->data;
         imprime_pessoa(p, fp, table, list);
         imprime_prolog(p,fp1, table, list);

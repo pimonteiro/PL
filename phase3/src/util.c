@@ -36,7 +36,7 @@ void factos_base(Pessoa p, FILE* f, GList* imp){
 //imp e a lista de pessoas que ja foram imprimidas, hash e a lista de todas as pessoas
 void imprime_pessoa(Pessoa p, FILE* f, GHashTable* hash, GList* imp){
 
-    if(!imprimido(list, p->id)){
+    if(!imprimido(imp, p->id)){
         factos_base(p, f, imp);
     }
     //imprime pais
