@@ -10,8 +10,10 @@ void factos_base(Pessoa p, FILE* f){
         printf("Ficheiro não existe");
         exit(1);
     }
-    if(p->nome != NULL)
-        fprintf(f, "#I%d nome %s\n", p->id, p->nome);
+    if(p->nome != NULL && p->apelido != NULL)
+        fprintf(f, "#I%d nome %s %s\n", p->id, p->nome, p->apelido);
+    else  if(p->nome != NULL) fprintf(f, "#I%d nome %s\n", p->id, p->nome);
+
 
     if(p->nasceu != 0 && p->flagNasceAprox <= 0)
         fprintf(f, "#I%d data-nascimento %d\n", p->id, p->nasceu);
